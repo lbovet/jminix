@@ -1,0 +1,189 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN"
+    "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+    <head>
+        <title>JMX Mini Console</title>    
+    
+    <link rel="stylesheet"
+            href="js/dojotoolkit/dijit/themes/nihilo/nihilo.css" />
+    
+    <style type="text/css">
+        @import "js/dojotoolkit/dojox/grid/resources/Grid.css";
+        @import "js/dojotoolkit/dojox/grid/resources/nihiloGrid.css";
+        .dojoxGrid table {
+        margin: 0;
+        }
+       
+		html, body { font-family: Tahoma, Helvetica; font-size: 8pt; margin:0px; width: 99%; height: 100%; }
+	
+    </style>
+
+    <!-- load the dojo toolkit base -->
+<!--    <script type="text/javascript" src="dojo.js" djConfig="blankGif:'blank.gif'"></script>
+ -->
+    <script type="text/javascript" src="js/dojotoolkit/dojo/dojo.js"
+        djConfig="parseOnLoad:true,locale:'en'"></script>
+
+    <script type="text/javascript"> 
+    
+    dojo.require("dijit.Tree");
+    dojo.require("dojox.data.JsonRestStore");
+    dojo.require("dijit.layout.BorderContainer");
+    dojo.require("dijit.layout.ContentPane");
+    dojo.require("dojox.grid.DataGrid");
+    dojo.require("dojo.data.ItemFileReadStore");
+    dojo.require("dojox.rpc.Rest");
+    dojo.require("dojox.rpc.JsonRest");
+
+    dojo.addOnLoad(function(){
+
+        dijit._Widget._blankGif="blank.gif";
+
+        var store = new dojox.data.JsonRestStore({
+            target:"servers/"
+        });
+        
+        var model = new dijit.tree.TreeStoreModel({
+            query: "",
+            store:  store
+        });
+
+	// Override to support erroneous children (e.g. 403)
+	model.getChildren = function(/*dojo.data.Item*/ parentItem, /*function(items)*/ onComplete, /*function*/ onError){
+			// summary:
+			// 		Calls onComplete() with array of child items of given parent item, all loaded.
+
+			var store = this.store;
+
+			// get children of specified item
+			var childItems = [];
+			for (var i=0; i<this.childrenAttrs.length; i++){
+				var vals = store.getValues(parentItem, this.childrenAttrs[i]);
+				childItems = childItems.concat(vals);
+			}
+
+			// count how many items need to be loaded
+			var _waitCount = 0;
+			dojo.forEach(childItems, function(item){ if(!store.isItemLoaded(item)){ _waitCount++; } });
+
+			if(_waitCount == 0){
+				// all items are already loaded.  proceed...
+				onComplete(childItems);
+			}else{
+				// still waiting for some or all of the items to load
+				var onItem = function onItem(item){
+					if(--_waitCount == 0){
+						// all nodes have been loaded, send them to the tree
+						onComplete(childItems);
+					}
+				}
+				dojo.forEach(childItems, function(item){
+					if(!store.isItemLoaded(item)){
+						store.loadItem({
+							item: item,
+							onItem: onItem,
+							onError: onItem
+						});
+					}
+				});
+			}
+		}
+
+        var tree = new dijit.Tree({
+            model: model,  
+                onClick: function(item,node){
+            		if(item.__id=="servers/servers/#0") {
+            			dojo.byId("path").innerHTML="servers/";
+                    	dojo.byId("path").href="servers/";
+            		} else { 
+                    	dojo.byId("path").innerHTML=item.__id.replace(/ /g,'&nbsp;');
+                    	dojo.byId("path").href=item.__id;
+            		}
+                    	
+					if(item.__id.indexOf("attribute")==-1) {
+						grid.setStore(new dojo.data.ItemFileReadStore({data :  { items: [] }}));
+						return;
+					}
+                    
+					if(item.children && item.children instanceof Array) {
+						var items=[];
+						var counter=item.children.length;
+						for(var i=0; i<item.children.length; i++){
+							dojox.rpc.Rest._index[item.children[i].__id]=null;
+											
+							dojox.rpc.JsonRest.fetch(item.children[i].__id).addCallback(function(value){								  
+								items.push(value);    
+								counter--;
+								if(counter==0) {
+									grid.setStore(new dojo.data.ItemFileReadStore({data :  { items: items }}));									
+								}								
+							});
+						}						
+																			  
+				    } else{
+				    	dojox.rpc.Rest._index[item.__id]=null;
+				    	dojox.rpc.JsonRest.fetch(item.__id).addCallback(function(value){
+				    			grid.setStore(new dojo.data.ItemFileReadStore({data : { items: [value] }}));
+				    		});
+					}											
+                },
+                onDblClick: function(item,node){
+                    window.open(item.__id);
+                },
+                onOpen: function(item,node){
+                	var children = node.getChildren();
+                    if(children && children.length==1) {
+                        var node=children[0];
+                        if (node.isExpandable && !node.isExpanded)
+                        {
+                        	dijit.byId('tree')._expandNode(node);
+                        }
+                    }
+                }
+             },
+            "tree");        
+                   // set the layout structure:
+        var layout = [
+            { field: 'label', name: 'Item', width: '50%' },
+            { field: 'value', name: 'Value', width: 'auto' }
+        ];
+
+        // create a new grid:
+        var grid = new dojox.grid.DataGrid({
+                query: { label: '*' },
+                store: new dojo.data.ItemFileReadStore({data :  { items: [] }}),
+            clientSort: false,
+            structure: layout,
+            height:'100%',
+            style: "font-size:8pt;font-family:Tahoma,Helvetica;",
+            onRowDblClick: function(event){
+                    window.open(grid.getItem(event.rowIndex).__id);
+                }
+        }, "grid");
+
+        // Call startup, in order to render the grid:
+        grid.startup();
+
+
+    });
+
+    
+    </script>
+    
+    </head>
+    <body class="nihilo">
+    <div dojoType="dijit.layout.BorderContainer" style="margin:0px; width: 100%; height: 100%; overflow: hidden;">
+            <div dojoType="dijit.layout.ContentPane" style="overflow: hidden" region="top">
+            <b><a href="http://www.jminix.org" style="text-decoration:none;color:black;">JMiniX&nbsp;Console</a></b>
+            	<span style="padding-left:4px;background-color:white; position: absolute; right:8px;" ><a style="font-size:90%;" id="path" href="servers/">servers/</a></span>            
+            </div>
+            <div dojoType="dijit.layout.ContentPane" style="width: 50%;" region="leading" splitter="true">
+            <div id="tree"></div>
+        </div>
+        <div dojoType="dijit.layout.BorderContainer" region="center" style="border: 1px solid #ccc">
+            <div  id="grid"></div>
+        </div>
+    </div>
+
+    </body>
+</html>

@@ -1,0 +1,3 @@
+#foreach( $key in $attribute.compositeType.keySet() )
+$key : $attribute.get( $key )
+#end

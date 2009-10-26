@@ -1,0 +1,26 @@
+<html>
+
+<h3>
+#if ($request.attributes.get("server"))
+	Server $request.attributes.get("server")
+	#if ($request.attributes.get("domain"))
+			> $request.attributes.get("domain")
+	#end
+	#if ($request.attributes.get("mbean"))
+		> $encoder.decode($request.attributes.get("mbean"))
+	#end
+#else
+	Servers
+#end
+
+</h3>
+
+</h3>
+<ul>
+#foreach( $i in $items)
+<li>	
+	<a href="$encoder.encode($i.toString())/">$i</a>
+</li>
+#end
+</ul>
+</html>

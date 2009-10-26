@@ -1,0 +1,17 @@
+<html>
+<h3>Server $request.attributes.get("server") > $encoder.decode($request.attributes.get("domain")) > $encoder.decode($request.attributes.get("mbean")) - Attributes</h3>
+<dl>
+#foreach( $attribute in $items)
+<dt>
+	<a href="$encoder.encode($attribute.name)/">$attribute.name</a> ($attribute.type)
+</dt>
+<dd>
+	$attribute.description 
+	#if (not $attribute.writable )
+	(ro)
+	#end
+</dd>
+</li>
+#end
+</dl>
+</html>

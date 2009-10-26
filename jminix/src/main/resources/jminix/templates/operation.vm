@@ -1,0 +1,16 @@
+<html>
+<body>
+<h3>Server $request.attributes.get("server") > $encoder.decode($request.attributes.get("domain")) > $encoder.decode($request.attributes.get("mbean")) > $operation.name</h3>
+
+$operation.description<br>
+
+<form method="POST">
+#foreach( $param in $operation.signature )
+	$param.type $param.name : <input type="text" size="50" name="param"/> ($param.description)<br>		
+#end
+<input type="hidden" name="foo" value="bar"/>
+<input type="submit" value="execute"/>
+</form>
+
+</body>
+</html>

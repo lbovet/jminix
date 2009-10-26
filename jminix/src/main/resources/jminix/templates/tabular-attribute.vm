@@ -1,0 +1,20 @@
+<html>
+<h3>Server $request.attributes.get("server") > $encoder.decode($request.attributes.get("domain")) > $encoder.decode($request.attributes.get("mbean")) > $encoder.decode($request.attributes.get("attribute"))</h3>
+
+<table>
+<tr>
+#foreach( $key in $attribute.tabularType.rowType.keySet() )
+<th>$key</th>
+#end
+</tr>
+#foreach ($row in $attribute.values())
+	<tr>
+	#foreach( $item in $row.compositeType.keySet() )
+		<td>$row.get($item)</td>
+	#end
+	</tr>
+#end
+</table>
+
+
+</html>

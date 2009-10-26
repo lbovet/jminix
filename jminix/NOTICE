@@ -1,0 +1,22 @@
+=========================================================================
+==  Dojo Notice                                                        ==
+=========================================================================
+
+This product includes software developed by the Dojo Foundation.
+
+Copyright (c) 2005-2009, The Dojo Foundation
+All rights reserved.
+
+Dojo uses code from other open source projects, subject to the terms of 
+their licenses. Those licenses and software copyright notices are listed below:
+
+  * Firebug Lite (Dojo Base): BSD License
+  * Common Locale Data Repository, CLDR (Dojo Base): Unicode License
+  * dojo.css (Dojo Base): BSD License
+  * AES Encryption Algorithm (DojoX SQL): BSD License
+  * MD5 and SHA1 Encruption Algorithms (DojoX Cryptography): BSD License
+  * Dojo Offline Editor Server Demo (DojoX Offline): Apache License
+  * CLDR (Dojo Utilities): Apache and Mozilla Public Licenses
+  * Packer (Dojo Utilities): MIT License
+  * DOH Sounds (Dojo Utilities): Copyright Original Authors
+  * ShrinkSafe, Rhino Interpreter (Dojo Utilities): Mozilla Public License 1.1

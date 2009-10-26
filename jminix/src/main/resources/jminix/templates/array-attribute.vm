@@ -1,0 +1,13 @@
+<html>
+<body>
+<h3>Server $request.attributes.get("server") > $encoder.decode($request.attributes.get("domain")) > $encoder.decode($request.attributes.get("mbean")) > $encoder.decode($request.attributes.get("attribute"))</h3>
+$attribute.description
+<ul>
+#foreach( $i in $items)
+<li>	
+	$i
+</li>
+#end
+</ul>
+</body>
+</html>

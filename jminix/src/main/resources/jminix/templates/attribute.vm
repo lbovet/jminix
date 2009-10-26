@@ -1,0 +1,13 @@
+<html>
+<body>
+<h3>Server $request.attributes.get("server") > $encoder.decode($request.attributes.get("domain")) > $encoder.decode($request.attributes.get("mbean")) > $encoder.decode($request.attributes.get("attribute"))</h3>
+$attribute.description
+#if ($attribute.writable)
+<form method="POST"><input type="text" name="value" value="$value"/><input type="submit" value="update"/></form>
+#else
+<pre>
+$value
+</pre>
+#end
+</body>
+</html>

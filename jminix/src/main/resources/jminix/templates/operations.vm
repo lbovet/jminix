@@ -1,0 +1,18 @@
+<html>
+<h3>Server $request.attributes.get("server") > $encoder.decode($request.attributes.get("domain")) > $encoder.decode($request.attributes.get("mbean")) - Operations</h3>
+<dl>
+#foreach( $pair in $items)
+<dt>
+	<a href="$encoder.encode($pair.declaration)/">$pair.operation.name</a>
+</dt>
+<dd>
+	$pair.operation.description<br>
+	<tt><b>$pair.operation.name</b>(
+	#foreach( $param in $pair.operation.signature )
+		$param.type $param.name,		
+	#end )</tt>
+</dd>
+</li>
+#end
+</dl>
+</html>

@@ -1,0 +1,9 @@
+<html>
+<ul>
+#foreach( $i in $items)
+<li>	
+	$i
+</li>
+#end
+</ul>
+</html>
