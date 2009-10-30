@@ -1,5 +1,6 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>org.jminix</groupId>
 	<artifactId>jminix</artifactId>
@@ -8,19 +9,21 @@
 	<description>A simple embeddable restful JMX console</description>
 	<packaging>jar</packaging>
 	<url>http://www.jminix.org</url>
+
 	<licenses>
-	  <license>
-	    <name>The Apache Software License, Version 2.0</name>
-	    <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
-	    <distribution>repo</distribution>
-	  </license>
+		<license>
+			<name>The Apache Software License, Version 2.0</name>
+			<url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+			<distribution>repo</distribution>
+		</license>
 	</licenses>
+
 	<scm>
 		<connection>scm:svn:http://jminix.googlecode.com/svn/trunk/</connection>
-		<developerConnection>scm:svn:https://jminix.googlecode.com/svn/trunk/</developerConnection>		
-    	<url>http://code.google.com/p/jminix/source/browse/</url>
-  	</scm>
-	
+		<developerConnection>scm:svn:https://jminix.googlecode.com/svn/trunk/</developerConnection>
+		<url>http://code.google.com/p/jminix/source/browse/</url>
+	</scm>
+
 	<developers>
 		<developer>
 			<name>Laurent Bovet</name>
@@ -32,40 +35,43 @@
 			<timezone>+1</timezone>
 		</developer>
 	</developers>
-	
+<!-- 
+	<repositories>
+		<repository>
+			<id>maven-restlet</id>
+			<name>Public online
+		Restlet repository</name>
+			<url>http://maven.restlet.org</url>
+		</repository>
+	</repositories>
+ -->
 	<dependencies>
 		<dependency>
 			<groupId>org.restlet</groupId>
 			<artifactId>org.restlet</artifactId>
-			<version>1.1.5</version>
+			<version>${restlet.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.restlet</groupId>
 			<artifactId>org.restlet.ext.velocity</artifactId>
-			<version>1.1.5</version>
+			<version>${restlet.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>com.noelios.restlet</groupId>
 			<artifactId>com.noelios.restlet</artifactId>
-			<version>1.1.5</version>
+			<version>${restlet.version}</version>
 		</dependency>
-
 		<dependency>
 			<groupId>com.noelios.restlet</groupId>
 			<artifactId>com.noelios.restlet.ext.servlet</artifactId>
-			<version>1.1.5</version>
-		</dependency>		
+			<version>${restlet.version}</version>
+		</dependency>
 		<dependency>
 			<groupId>com.noelios.restlet</groupId>
 			<artifactId>com.noelios.restlet.ext.simple</artifactId>
-			<version>1.1.5</version>
+			<version>${restlet.version}</version>
 			<scope>test</scope>
 		</dependency>
-		<dependency>
-			<groupId>log4j</groupId>
-			<artifactId>log4j</artifactId>
-			<version>1.2.15</version>
-		</dependency>	    
 		<dependency>
 			<groupId>commons-logging</groupId>
 			<artifactId>commons-logging</artifactId>
@@ -87,33 +93,35 @@
 			<groupId>net.sf.json-lib</groupId>
 			<artifactId>json-lib</artifactId>
 			<version>2.2.3</version>
+			<classifier>jdk15</classifier>
 		</dependency>
 		<dependency>
 			<groupId>org.springframework</groupId>
 			<artifactId>spring</artifactId>
-			<version>2.5.6</version>
+			<version>${spring.version}</version>
 			<scope>provided</scope>
 		</dependency>
 	</dependencies>
+
 	<build>
-	    <resources>
-	      <resource>
-	        <directory>src/main/resources</directory>
-	      </resource>
-	    </resources>	
+		<resources>
+			<resource>
+				<directory>src/main/resources</directory>
+			</resource>
+		</resources>
 		<plugins>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-compiler-plugin</artifactId>
 				<configuration>
-					<source>1.5</source>
-					<target>1.5</target>
+					<source>${jdk}</source>
+					<target>${jdk}</target>
 				</configuration>
 			</plugin>
-		      <plugin>
-		        <groupId>org.apache.maven.plugins</groupId>
-		        <artifactId>maven-resources-plugin</artifactId>
-		      </plugin>			
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-resources-plugin</artifactId>
+			</plugin>
 			<plugin>
 				<artifactId>maven-assembly-plugin</artifactId>
 				<configuration>
@@ -121,30 +129,36 @@
 						<descriptorRef>jar-with-dependencies</descriptorRef>
 					</descriptorRefs>
 					<archive>
-            			<manifest>
-              				<mainClass>org.jminix.console.tool.StandaloneMiniConsole</mainClass>
-            			</manifest>
-          			</archive>
+						<manifest>
+							<mainClass>org.jminix.console.tool.StandaloneMiniConsole</mainClass>
+						</manifest>
+					</archive>
 				</configuration>
-			</plugin>			
+			</plugin>
 			<plugin>
 				<artifactId>maven-javadoc-plugin</artifactId>
 				<dependencies>
 					<dependency>
 						<groupId>org.springframework</groupId>
 						<artifactId>spring</artifactId>
-						<version>2.5.6</version>
-					</dependency>				
+						<version>${spring.version}</version>
+					</dependency>
 				</dependencies>
 			</plugin>
 			<plugin>
-			  <artifactId>maven-assembly-plugin</artifactId>
-			  <configuration>
-			    <descriptorRefs>
-			      <descriptorRef>src</descriptorRef>
-			    </descriptorRefs>
-			  </configuration>
-			</plugin>			
+				<artifactId>maven-assembly-plugin</artifactId>
+				<configuration>
+					<descriptorRefs>
+						<descriptorRef>src</descriptorRef>
+					</descriptorRefs>
+				</configuration>
+			</plugin>
 		</plugins>
 	</build>
+
+	<properties>
+		<spring.version>2.5.6</spring.version>
+		<restlet.version>1.1.5</restlet.version>
+		<jdk>1.5</jdk>
+	</properties>
 </project>
