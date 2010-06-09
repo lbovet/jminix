@@ -111,10 +111,11 @@
 						for(var i=0; i<item.children.length; i++){
 							dojox.rpc.Rest._index[item.children[i].__id]=null;
 											
-							dojox.rpc.JsonRest.fetch(item.children[i].__id).addCallback(function(value){								  
+							dojox.rpc.JsonRest.fetch(item.children[i].__id).addCallback(function(value){	
 								items.push(value);    
 								counter--;
 								if(counter==0) {
+									items.sort(function(x, y) { return ((x.label < y.label) ? -1 : ((x.label > y.label) ? 1  : 0));  });
 									grid.setStore(new dojo.data.ItemFileReadStore({data :  { items: items }}));									
 								}								
 							});
