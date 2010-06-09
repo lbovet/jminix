@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright 2009 Laurent Bovet, Swiss Post IT <lbovet@jminix.org>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,7 +12,7 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- * 
+ *
  */
 
 package org.jminix.console.resource;
@@ -31,6 +31,8 @@ import javax.management.MalformedObjectNameException;
 import javax.management.ObjectName;
 import javax.management.ReflectionException;
 
+import net.sf.json.JSONSerializer;
+
 import org.restlet.Context;
 import org.restlet.data.Form;
 import org.restlet.data.MediaType;
@@ -38,38 +40,39 @@ import org.restlet.data.Request;
 import org.restlet.data.Response;
 import org.restlet.resource.Representation;
 import org.restlet.resource.ResourceException;
+import org.restlet.resource.Variant;
 
 public class OperationResource extends AbstractTemplateResource
 {
-    
+
     public OperationResource(Context context, Request request, Response response)
     {
         super(context, request, response);
     }
 
     private String templateName = "operation";
-    
+
     @Override
     protected Map<String, Object> getModel()
     {
-        int serverIndex = Integer.parseInt(getRequest().getAttributes().get("server").toString()); 
-        
+        int serverIndex = Integer.parseInt(getRequest().getAttributes().get("server").toString());
+
         String domain = getRequest().getAttributes().get("domain").toString();
-        
+
         String mbean = new EncoderBean().decode(getRequest().getAttributes().get("mbean").toString());
-        
+
         String declaration = new EncoderBean().decode(getRequest().getAttributes().get("operation").toString());
 
         String operation = declaration.split("\\(")[0];
-        
+
         String signature = declaration.split("\\(").length > 1 ?
-                               (declaration.split("\\(")[1].split("\\)").length >0 ? 
+                               (declaration.split("\\(")[1].split("\\)").length >0 ?
                                  declaration.split("\\(")[1].split("\\)")[0] : "") : "";
-        
+
         Map<String, Object> model = new HashMap<String, Object>();
-        
-        model.put("operation", getOperation(getServer(serverIndex), domain, mbean, operation, signature));                 
-            
+
+        model.put("operation", getOperation(getServer(serverIndex), domain, mbean, operation, signature));
+
         return model;
     }
 
@@ -77,39 +80,46 @@ public class OperationResource extends AbstractTemplateResource
     public void acceptRepresentation(Representation entity) throws ResourceException
     {
         String[] stringParams = new Form(entity).getValuesArray("param");
-        
-        int serverIndex = Integer.parseInt(getRequest().getAttributes().get("server").toString()); 
-        
+
+        int serverIndex = Integer.parseInt(getRequest().getAttributes().get("server").toString());
+
         String domain = getRequest().getAttributes().get("domain").toString();
-        
+
         String mbean = new EncoderBean().decode(getRequest().getAttributes().get("mbean").toString());
-               
+
         String declaration = new EncoderBean().decode(getRequest().getAttributes().get("operation").toString());
 
         String operation = declaration.split("\\(")[0];
-        
+
         String[] signature = declaration.split("\\(").length > 1 ? (
-                               declaration.split("\\(")[1].split("\\)").length >0 ? 
-                                    declaration.split("\\(")[1].split("\\)")[0].split(",") : 
+                               declaration.split("\\(")[1].split("\\)").length >0 ?
+                                    declaration.split("\\(")[1].split("\\)")[0].split(",") :
                                         new String[]{} ) : new String[]{};
-        
+
         MBeanServerConnection server = getServer(serverIndex);
-                
+
         try
-        {            
-                        
+        {
+
             Object[] params=new Object[signature.length];
-            
+
             ValueParser parser = new ValueParser();
-            for(int i=0; i<stringParams.length; i++) {                
-                params[i] = parser.parse(stringParams[i], signature[i]);                
+            for(int i=0; i<stringParams.length; i++) {
+                params[i] = parser.parse(stringParams[i], signature[i]);
             }
-            
+
             Object result = server.invoke(new ObjectName(domain+":"+mbean), operation, params, signature);
-            
+
             if(result != null) {
-                getResponse().setEntity(result.toString(), MediaType.TEXT_PLAIN);
-            } else {             
+            	Variant variant = getPreferredVariant();
+            	if (MediaType.APPLICATION_JSON == variant.getMediaType()) {
+                    getResponse().setEntity(
+                            JSONSerializer.toJSON(result).toString(),
+                            MediaType.APPLICATION_JSON);
+            	} else {
+            		getResponse().setEntity(result.toString(), MediaType.TEXT_PLAIN);
+            	}
+            } else {
                 getResponse().redirectPermanent(new EncoderBean().encode(declaration));
             }
         }
@@ -133,16 +143,15 @@ public class OperationResource extends AbstractTemplateResource
         {
             throw new RuntimeException(e);
         }
-                
     }
-    
-    
+
+
     @Override
     public boolean allowPost()
     {
         return true;
     }
-    
+
     @Override
     protected String getTemplateName()
     {
@@ -161,7 +170,7 @@ public class OperationResource extends AbstractTemplateResource
                 StringBuilder sb = new StringBuilder();
                 boolean first = true;
                 for (MBeanParameterInfo p : i.getSignature())
-                {                   
+                {
                     if (!first)
                     {
                         sb.append(",");
@@ -172,7 +181,7 @@ public class OperationResource extends AbstractTemplateResource
                 }
 
                 if (i.getName().equals(operationName))
-                {                 
+                {
                     if (sb.toString().equals(signature))
                     {
                         return i;
