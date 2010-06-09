@@ -121,7 +121,7 @@ public class MiniConsoleApplication extends Application
         this.serverConnectionProvider = serverConnectionProvider;
     }
     
-    private static void configureLog(Context context) {
+    protected static void configureLog(Context context) {
         if(! "true".equals(System.getProperty("common.jmx.show.restlet.log"))) {
             java.util.logging.Logger.getLogger("org.restlet").setLevel(java.util.logging.Level.SEVERE);
             if(context!=null) {
