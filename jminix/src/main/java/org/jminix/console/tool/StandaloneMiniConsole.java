@@ -30,20 +30,28 @@ import org.jminix.console.application.MiniConsoleApplication;
  */
 public class StandaloneMiniConsole
 {
-    private Component component=null;
+    private Component component=null;    
     
     /**
      * @param port the listening HTTP port
      */
     public StandaloneMiniConsole(int port) {
+    	this(port, new MiniConsoleApplication());
+    }
+    
+    /**
+     * @param port the listening HTTP port
+     * @param the application object, if you want to create it by yourself.
+     */
+    public StandaloneMiniConsole(int port, MiniConsoleApplication application) {
         // Create a new Component.
-         component = new Component();
+        component = new Component();
         component.getClients().add(Protocol.CLAP);
         // Add a new HTTP server
         component.getServers().add(Protocol.HTTP, port);
 
         // Attach the sample application.
-        component.getDefaultHost().attach(new MiniConsoleApplication());
+        component.getDefaultHost().attach(application);
 
         // Start the component.
         try
@@ -79,5 +87,9 @@ public class StandaloneMiniConsole
             port=new Integer(args[0]);
         }
         new StandaloneMiniConsole(port);
+    }
+    
+    public MiniConsoleApplication getApplication() {
+    	return (MiniConsoleApplication)component.getApplication();
     }
 }
