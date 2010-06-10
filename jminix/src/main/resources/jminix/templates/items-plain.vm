@@ -1,3 +1,0 @@
-#foreach( $i in $items)
-$i
-#end
