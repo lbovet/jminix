@@ -1,14 +1,19 @@
-<html>
-<body>
-<h3>Server $request.attributes.get("server") > $encoder.decode($request.attributes.get("domain")) > $encoder.decode($request.attributes.get("mbean")) > $operation.name</h3>
+#set( $title="Server $request.attributes.get('server') > $encoder.decode($request.attributes.get('domain')) > $encoder.decode($request.attributes.get('mbean')) > $operation.name" )
+#set( $name="$operation.name  - $encoder.decode($request.attributes.get('mbean'))")
+#parse("jminix/templates/header.vm")
 
-$operation.description<br>
+$operation.description
 
 <form method="POST">
+<table border=0>
 #foreach( $param in $operation.signature )
-	$param.type $param.name : <input type="text" size="50" name="param"/> ($param.description)<br>		
+<tr>
+	<td>$param.type <b>$param.name</b> </td><td> <input type="text" size="50" name="param"/> ($param.description)</td>	
+</tr>
 #end
-<input type="hidden" name="foo" value="bar"/>
+
+</table>
+<input type="hidden" name="executed" value="true"/>
 <input type="submit" value="execute"/>
 </form>
 

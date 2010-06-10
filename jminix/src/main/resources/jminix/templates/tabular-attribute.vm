@@ -1,5 +1,8 @@
+#set( $title="Server $request.attributes.get('server') > $encoder.decode($request.attributes.get('domain')) > $encoder.decode($request.attributes.get('mbean')) > $encoder.decode($request.attributes.get('attribute'))" )
+#set( $name="$encoder.decode($request.attributes.get('attribute'))" )
+#parse('jminix/templates/header.vm')
 <html>
-<h3>Server $request.attributes.get("server") > $encoder.decode($request.attributes.get("domain")) > $encoder.decode($request.attributes.get("mbean")) > $encoder.decode($request.attributes.get("attribute"))</h3>
+<h3></h3>
 
 <table>
 <tr>
@@ -15,6 +18,4 @@
 	</tr>
 #end
 </table>
-
-
-</html>
+#parse('jminix/templates/footer.vm')

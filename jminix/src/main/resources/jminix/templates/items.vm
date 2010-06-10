@@ -1,4 +1,4 @@
-<html>
+#parse("header.vm)
 <ul>
 #foreach( $i in $items)
 <li>	
@@ -6,4 +6,4 @@
 </li>
 #end
 </ul>
-</html>
+#parse("footer.vm")

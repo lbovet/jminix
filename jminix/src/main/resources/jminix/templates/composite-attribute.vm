@@ -1,10 +1,10 @@
-<html>
-<h3>Server $request.attributes.get("server") > $encoder.decode($request.attributes.get("domain")) > $encoder.decode($request.attributes.get("mbean")) > $encoder.decode($request.attributes.get("attribute"))</h3>
+#set( $title="Server $request.attributes.get('server') > $encoder.decode($request.attributes.get('domain')) > $encoder.decode($request.attributes.get('mbean')) > $encoder.decode($request.attributes.get('attribute'))" )
+#set( $name="$encoder.decode($request.attributes.get('attribute'))" )
+#parse('jminix/templates/header.vm')
 
 <dl>
 #foreach( $key in $attribute.compositeType.keySet() )
 <dt>$key : $attribute.get( $key ) <dd> $attribute.compositeType.getDescription( $key )
 #end
 </dl>
-
-</html>
+#parse('jminix/templates/footer.vm')

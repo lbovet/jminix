@@ -1,9 +1,11 @@
-<html>
-<h3>Server $request.attributes.get("server") > $encoder.decode($request.attributes.get("domain")) > $encoder.decode($request.attributes.get("mbean")) - Operations</h3>
+#set( $title="Server $request.attributes.get('server') > $encoder.decode($request.attributes.get('domain')) > $encoder.decode($request.attributes.get('mbean')) - Operations" )
+#set( $name="$encoder.decode($request.attributes.get('mbean'))" )
+#parse('jminix/templates/header.vm')
+
 <dl>
 #foreach( $pair in $items)
 <dt>
-	<a href="$encoder.encode($pair.declaration)/">$pair.operation.name</a>
+	<a href='$encoder.encode($pair.declaration)/'>$pair.operation.name</a>
 </dt>
 <dd>
 	$pair.operation.description<br>
@@ -15,4 +17,4 @@
 </li>
 #end
 </dl>
-</html>
+#parse('jminix/templates/footer.vm')

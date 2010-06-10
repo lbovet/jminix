@@ -1,26 +1,26 @@
-<html>
 
-<h3>
 #if ($request.attributes.get("server"))
-	Server $request.attributes.get("server")
+	#set( $prefix="" )
+	#set( $title="Server $request.attributes.get('server')" )
 	#if ($request.attributes.get("domain"))
-			> $request.attributes.get("domain")
+		#set( $title="Server $request.attributes.get('server') > $request.attributes.get('domain')" )
 	#end
 	#if ($request.attributes.get("mbean"))
-		> $encoder.decode($request.attributes.get("mbean"))
+		#set( $title="Server $request.attributes.get('server') > $request.attributes.get('domain') > $encoder.decode($request.attributes.get('mbean'))" )
 	#end
 #else
-	Servers
+	#set( $prefix="Server " )
+	#set( $title='Servers' )
 #end
 
-</h3>
+#set( $name='$items[0], ...' )
+#parse("jminix/templates/header.vm")
 
-</h3>
 <ul>
 #foreach( $i in $items)
 <li>	
-	<a href="$encoder.encode($i.toString())/">$i</a>
+	<a href="$encoder.encode($i.toString())/">$prefix$i</a>
 </li>
 #end
 </ul>
-</html>
+#parse("jminix/templates/footer.vm")

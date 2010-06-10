@@ -1,0 +1,8 @@
+
+#foreach( $attribute in $items)
+$attribute.name ($attribute.type) $attribute.description 
+#if (not $attribute.writable )
+(ro)
+#end
+
+#end
