@@ -32,6 +32,7 @@ import javax.management.MBeanServerConnection;
 import javax.management.MalformedObjectNameException;
 import javax.management.ObjectName;
 import javax.management.ReflectionException;
+import javax.management.RuntimeErrorException;
 import javax.management.openmbean.CompositeData;
 import javax.management.openmbean.TabularData;
 
@@ -114,7 +115,11 @@ public class AttributeResource extends AbstractTemplateResource
         }
         catch (MBeanException e)
         {
-            model.put("value", e.getMessage());
+        	Exception targetException = e.getTargetException();
+        	if(targetException instanceof RuntimeErrorException) {
+        		throw new RuntimeException(targetException.getCause());
+        	}
+            model.put("value", e.getTargetException().getCause().getMessage());
             return model;
         }
         catch (ReflectionException e)
