@@ -37,11 +37,9 @@ public class DomainsResource extends AbstractListResource
     @Override
     protected List<? extends Object> getList()
     {
-        int serverIndex = Integer.parseInt(getRequest().getAttributes().get("server").toString()); 
-        
         try
         {
-            List<String> result= Arrays.asList(getServer(serverIndex).getDomains());
+            List<String> result= Arrays.asList(getServer().getDomains());
             Collections.sort(result);
             return result;
         }

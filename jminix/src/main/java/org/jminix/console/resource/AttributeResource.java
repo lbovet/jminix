@@ -56,8 +56,6 @@ public class AttributeResource extends AbstractTemplateResource
     @Override
     protected Map<String, Object> getModel()
     {
-        int serverIndex = Integer.parseInt(getRequest().getAttributes().get("server").toString()); 
-        
         String domain = getRequest().getAttributes().get("domain").toString();
         
         String mbean = new EncoderBean().decode(getRequest().getAttributes().get("mbean").toString());
@@ -68,7 +66,7 @@ public class AttributeResource extends AbstractTemplateResource
         
         try
         {
-            MBeanServerConnection server = getServer(serverIndex);
+            MBeanServerConnection server = getServer();
             
             MBeanAttributeInfo info=null;
             for(MBeanAttributeInfo i: server.getMBeanInfo(new ObjectName(domain+":"+mbean)).getAttributes()) {
@@ -140,16 +138,14 @@ public class AttributeResource extends AbstractTemplateResource
     public void acceptRepresentation(Representation entity) throws ResourceException
     {
         String value = new Form(entity).getFirstValue("value");
-        
-        int serverIndex = Integer.parseInt(getRequest().getAttributes().get("server").toString()); 
-        
+
         String domain = getRequest().getAttributes().get("domain").toString();
         
         String mbean = new EncoderBean().decode(getRequest().getAttributes().get("mbean").toString());
                
         String attributeName = new EncoderBean().decode(getRequest().getAttributes().get("attribute").toString());
         
-        MBeanServerConnection server = getServer(serverIndex);
+        MBeanServerConnection server = getServer();
         
         try
         {

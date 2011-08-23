@@ -32,7 +32,7 @@ import org.apache.commons.logging.LogFactory;
  * @author Laurent Bovet (lbovet@jminix.org)
  * @since 0.8
  */
-public class DefaultLocalServerConnectionProvider implements ServerConnectionProvider
+public class DefaultLocalServerConnectionProvider extends AbstractListServerConnectionProvider
 {
 
     public List<MBeanServerConnection> getConnections()

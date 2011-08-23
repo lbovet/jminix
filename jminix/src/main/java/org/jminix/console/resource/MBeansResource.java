@@ -40,14 +40,12 @@ public class MBeansResource extends AbstractListResource
 
     @Override
     protected List<? extends Object> getList()
-    {
-        int serverIndex = Integer.parseInt(getRequest().getAttributes().get("server").toString()); 
-        
+    {        
         String domain = getRequest().getAttributes().get("domain").toString();
         
         try
         {
-            MBeanServerConnection server = getServer(serverIndex);
+            MBeanServerConnection server = getServer();
             
             List<ObjectName> names = new ArrayList<ObjectName>(server.queryNames(new ObjectName(domain+":*"), null));            
 

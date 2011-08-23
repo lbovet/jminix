@@ -55,15 +55,13 @@ public class OperationsResource extends AbstractListResource
     @Override
     protected List<? extends Object> getList()
     {
-        int serverIndex = Integer.parseInt(getRequest().getAttributes().get("server").toString()); 
-        
         String domain = getRequest().getAttributes().get("domain").toString();
         
         String mbean = new EncoderBean().decode(getRequest().getAttributes().get("mbean").toString());        
         
         try
         {
-            MBeanServerConnection server = getServer(serverIndex);
+            MBeanServerConnection server = getServer();
                         
             List<Map<String, Object>> result = new ArrayList<Map<String, Object>>();            
             

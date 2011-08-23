@@ -249,9 +249,9 @@ public abstract class AbstractTemplateResource extends Resource
         return (ServerConnectionProvider) getContext().getAttributes().get(
                 "serverProvider");
     }
-
-    protected MBeanServerConnection getServer(int index)
+    
+    protected MBeanServerConnection getServer()
     {
-        return getServerProvider().getConnections().get(index);
+        return getServerProvider().getConnection(getRequest().getAttributes().get("server").toString());
     }
 }

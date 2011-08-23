@@ -45,13 +45,11 @@ public class MBeanResource extends AbstractListResource
     {
         List<Object> result = new ArrayList<Object>();
         
-        int serverIndex = Integer.parseInt(getRequest().getAttributes().get("server").toString()); 
-        
         String domain = getRequest().getAttributes().get("domain").toString();
         
         String mbean = new EncoderBean().decode(getRequest().getAttributes().get("mbean").toString());
         
-        MBeanServerConnection server = getServer(serverIndex);
+        MBeanServerConnection server = getServer();
             
         try
         {

@@ -55,8 +55,6 @@ public class OperationResource extends AbstractTemplateResource
     @Override
     protected Map<String, Object> getModel()
     {
-        int serverIndex = Integer.parseInt(getRequest().getAttributes().get("server").toString());
-
         String domain = getRequest().getAttributes().get("domain").toString();
 
         String mbean = new EncoderBean().decode(getRequest().getAttributes().get("mbean").toString());
@@ -71,7 +69,7 @@ public class OperationResource extends AbstractTemplateResource
 
         Map<String, Object> model = new HashMap<String, Object>();
 
-        model.put("operation", getOperation(getServer(serverIndex), domain, mbean, operation, signature));
+        model.put("operation", getOperation(getServer(), domain, mbean, operation, signature));
 
         return model;
     }
@@ -81,7 +79,6 @@ public class OperationResource extends AbstractTemplateResource
     {
         String[] stringParams = new Form(entity).getValuesArray("param");
 
-        int serverIndex = Integer.parseInt(getRequest().getAttributes().get("server").toString());
 
         String domain = getRequest().getAttributes().get("domain").toString();
 
@@ -96,7 +93,7 @@ public class OperationResource extends AbstractTemplateResource
                                     declaration.split("\\(")[1].split("\\)")[0].split(",") :
                                         new String[]{} ) : new String[]{};
 
-        MBeanServerConnection server = getServer(serverIndex);
+        MBeanServerConnection server = getServer();
 
         try
         {

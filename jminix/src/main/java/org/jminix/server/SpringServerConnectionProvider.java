@@ -32,7 +32,7 @@ import org.springframework.beans.factory.BeanFactoryAware;
  * @author Laurent Bovet (lbovet@jminix.org)
  * @since 0.8
  */
-public class SpringServerConnectionProvider implements ServerConnectionProvider, BeanFactoryAware
+public class SpringServerConnectionProvider extends AbstractListServerConnectionProvider implements BeanFactoryAware
 {
     BeanFactory beanFactory;        
     String[] names;

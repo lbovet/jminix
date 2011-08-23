@@ -17,6 +17,7 @@
 
 package org.jminix.console.resource;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -34,14 +35,7 @@ public class ServersResource extends AbstractListResource
     @Override
     protected List<Object> getList()
     {
-        
-        Object[] serverIndices = new Object[getServerProvider().getConnections().size()];
-        
-        for(int i=0; i<serverIndices.length; i++) {
-            serverIndices[i]=i;
-        }
-        
-        return Arrays.asList(serverIndices);
+        return new ArrayList<Object>(getServerProvider().getConnectionKeys());
     }
 
 }

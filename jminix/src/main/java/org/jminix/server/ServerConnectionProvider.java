@@ -18,6 +18,7 @@
 package org.jminix.server;
 
 import java.util.List;
+import java.util.Map;
 
 import javax.management.MBeanServerConnection;
 
@@ -31,8 +32,23 @@ public interface ServerConnectionProvider
 {
     /**
      * List of connections. The clients are not intended to cache them, but query them before each use.
+     * The ordering is guaranteed to be unchanged over time (e.g. after reboot).
      * 
      * @return the list of connections. 
      */
     public List<MBeanServerConnection> getConnections();
+
+	/**
+	 * @return the names of connections. They can be simple numeric identifiers. They are guarantee not to change over
+	 *         time (e.g. after reboot), though.
+	 */
+    public List<String> getConnectionKeys();
+    
+    /**
+     * Return a connection by name.
+     * 
+     * @param name key as returned by {@link #getConnectionKeys()}.
+     * @return the connection or null if not found.
+     */
+    public MBeanServerConnection getConnection(String name);
 }

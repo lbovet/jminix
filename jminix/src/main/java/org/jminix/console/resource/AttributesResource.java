@@ -56,15 +56,13 @@ public class AttributesResource extends AbstractListResource
     @Override
     protected List<? extends Object> getList()
     {
-        int serverIndex = Integer.parseInt(getRequest().getAttributes().get("server").toString()); 
-        
         String domain = getRequest().getAttributes().get("domain").toString();
         
         String mbean = new EncoderBean().decode(getRequest().getAttributes().get("mbean").toString());        
         
         try
         {
-            MBeanServerConnection server = getServer(serverIndex);
+            MBeanServerConnection server = getServer();
             
             List<MBeanAttributeInfo> result =new ArrayList<MBeanAttributeInfo>(Arrays.asList(server.getMBeanInfo(new ObjectName(domain+":"+mbean)).getAttributes()));
             
