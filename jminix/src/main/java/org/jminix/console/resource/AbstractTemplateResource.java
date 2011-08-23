@@ -45,6 +45,7 @@ import org.restlet.resource.StringRepresentation;
 import org.restlet.resource.Variant;
 
 import org.jminix.server.ServerConnectionProvider;
+import org.jminix.type.HtmlPage;
 
 public abstract class AbstractTemplateResource extends Resource
 {
@@ -113,6 +114,10 @@ public abstract class AbstractTemplateResource extends Resource
 
             Map<String, Object> enrichedModel = new HashMap<String, Object>(getModel());
 
+            if(enrichedModel.get("value") instanceof HtmlPage) {
+            	return new StringRepresentation(enrichedModel.get("value").toString(), MediaType.TEXT_HTML);
+            }
+            
             Template template;
             try
             {
@@ -219,7 +224,11 @@ public abstract class AbstractTemplateResource extends Resource
             {
                 if (getModel().containsKey("value"))
                 {
-                    result.put("value", getModel().get("value").toString());
+                	if(getModel().get("value") instanceof HtmlPage) {
+                		result.put("value", "Double-click to open page...");
+                	} else {
+                		result.put("value", getModel().get("value").toString());
+                	}
                 }
                 else if (getModel().containsKey("items"))
                 {
