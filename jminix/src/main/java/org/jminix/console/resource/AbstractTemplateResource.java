@@ -219,11 +219,18 @@ public abstract class AbstractTemplateResource extends Resource
             {
                 if (getModel().containsKey("value"))
                 {
-                    result.put("value", getModel().get("value"));
+                    result.put("value", getModel().get("value").toString());
                 }
                 else if (getModel().containsKey("items"))
                 {
-                    result.put("value", JSONSerializer.toJSON(getModel().get("items")).toString());
+                	Object items = getModel().get("items");
+                	String value = null;
+                	if(items.getClass().isArray()) {
+                		value = Arrays.deepToString((Object[])items);
+                	} else {
+                		value = items.toString();
+                	}
+                    result.put("value", value);
                 }
             }
 

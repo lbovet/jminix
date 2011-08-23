@@ -170,4 +170,26 @@
 		<restlet.version>1.1.5</restlet.version>
 		<jdk>1.5</jdk>
 	</properties>
+	
+	<distributionManagement>
+		<site>
+			<id>projects.doc</id>
+			<name>projects.doc</name>
+			<url>file:\\projects\doc\${pom.groupId}\${pom.version}</url>
+		</site>
+		<repository>
+			<id>maven2-post</id>
+			<name>maven2-post</name>
+			<url>file:\\maven\maven2-post</url>
+			<layout>default</layout>
+			<uniqueVersion>true</uniqueVersion>
+		</repository>
+		<snapshotRepository>
+			<id>maven2-snapshot</id>
+			<name>maven2-snapshot</name>
+			<url>file:\\maven\maven2-snapshot</url>
+			<layout>default</layout>
+			<uniqueVersion>false</uniqueVersion>
+		</snapshotRepository>
+	</distributionManagement>
 </project>
