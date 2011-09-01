@@ -3,7 +3,7 @@
 #parse("jminix/templates/header.vm")
 
 $operation.description
-
+<br>
 <form method="POST">
 <table border=0>
 #foreach( $param in $operation.signature )
@@ -15,6 +15,9 @@ $operation.description
 </table>
 <input type="hidden" name="executed" value="true"/>
 <input type="submit" value="execute"/>
+#if($ok)
+<span style="color:green">Done</span>
+#end
 </form>
 
 </body>

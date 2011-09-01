@@ -49,6 +49,8 @@ import org.jminix.type.HtmlPage;
 
 public abstract class AbstractTemplateResource extends Resource
 {
+	public String a;
+	
     private final static String VELOCITY_ENGINE_CONTEX_KEY = "template.resource.velocity.engine";
 
     public AbstractTemplateResource(Context context, Request request, Response response)
@@ -131,7 +133,11 @@ public abstract class AbstractTemplateResource extends Resource
             {
                 throw new RuntimeException(e);
             }
-
+            
+            String skin = getRequest().getResourceRef().getQueryAsForm().getValues("skin");            
+            enrichedModel.put("query", getQueryString());
+            enrichedModel.put("ok", "1".equals(getRequest().getResourceRef().getQueryAsForm().getValues("ok")));
+            enrichedModel.put("margin", "embedded".equals(skin) ? 0 : 5);
             enrichedModel.put("encoder", new EncoderBean());
             enrichedModel.put("request", getRequest());
 
@@ -269,5 +275,10 @@ public abstract class AbstractTemplateResource extends Resource
     protected MBeanServerConnection getServer()
     {
         return getServerProvider().getConnection(getRequest().getAttributes().get("server").toString());
+    }
+    
+    protected String getQueryString() {
+    	String query = getRequest().getResourceRef().getQuery();
+    	return query!=null ? "?"+query : "";
     }
 }

@@ -163,7 +163,12 @@ public class AttributeResource extends AbstractTemplateResource
                 server.setAttribute(new ObjectName(domain+":"+mbean), new Attribute(attributeName, attribute));
             }
             
-            getResponse().redirectPermanent(new EncoderBean().encode(attributeName));
+        	String queryString = getQueryString();
+        	if(queryString==null) {
+        		queryString = "?";
+        	}
+        	queryString+="ok=1";
+            getResponse().redirectPermanent(new EncoderBean().encode(attributeName)+queryString);
         }
         catch (InstanceNotFoundException e)
         {

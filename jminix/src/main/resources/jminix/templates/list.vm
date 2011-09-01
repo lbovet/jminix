@@ -13,13 +13,13 @@
 	#set( $title='Servers' )
 #end
 
-#set( $name='$items[0], ...' )
+#set( $name="$request.resourceRef.lastSegment" )
 #parse("jminix/templates/header.vm")
 
 <ul>
 #foreach( $i in $items)
 <li>	
-	<a href="$encoder.encode($i.toString())/">$prefix$i</a>
+	<a href="$encoder.encode($i.toString())/$query">$prefix$i</a>
 </li>
 #end
 </ul>

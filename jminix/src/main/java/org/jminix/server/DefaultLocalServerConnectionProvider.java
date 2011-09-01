@@ -47,11 +47,15 @@ public class DefaultLocalServerConnectionProvider extends AbstractListServerConn
            LogFactory.getLog(this.getClass()).warn("Not allowed to obtain the Java platform MBeanServer", ex);
        }
        
-       List servers = MBeanServerFactory.findMBeanServer(null);
-       
-       LogFactory.getLog(this.getClass()).debug("Found "+servers.size()+" MBean servers");
-       
-       result.addAll(servers);
+       try {
+           List servers = MBeanServerFactory.findMBeanServer(null);
+           
+           LogFactory.getLog(this.getClass()).debug("Found "+servers.size()+" MBean servers");
+           
+    	   result.addAll(servers);
+       } catch(Exception e) {
+    	   LogFactory.getLog(this.getClass()).warn("Could not register the Java platform MBeanServer", e);           
+       }
        
        return result;
     }

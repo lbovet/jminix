@@ -4,7 +4,7 @@
 <dl>
 #foreach( $attribute in $items)
 <dt>
-	<a href="$encoder.encode($attribute.name)/">$attribute.name</a> ($attribute.type)
+	<a href="$encoder.encode($attribute.name)/$query">$attribute.name</a> ($attribute.type)
 </dt>
 <dd>
 	$attribute.description 

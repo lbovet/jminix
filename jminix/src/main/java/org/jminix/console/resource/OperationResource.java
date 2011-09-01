@@ -117,7 +117,16 @@ public class OperationResource extends AbstractTemplateResource
             		getResponse().setEntity(result.toString(), MediaType.TEXT_PLAIN);
             	}
             } else {
-                getResponse().redirectPermanent(new EncoderBean().encode(declaration));
+            	String queryString = getQueryString();
+            	if(!queryString.contains("ok=1")) {
+                	if(queryString==null || "".equals(queryString)) {
+                		queryString = "?";
+                	} else {
+                		queryString += "&";
+                	}
+                	queryString+="ok=1";
+            	}
+                getResponse().redirectPermanent(new EncoderBean().encode(declaration)+queryString);
             }
         }
         catch (InstanceNotFoundException e)
