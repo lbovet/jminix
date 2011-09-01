@@ -11,7 +11,7 @@ package org.jminix.type;
 import java.io.Serializable;
 
 /**
- * Marker interface for text that must be rendered as an HTML page by the console. The <code>toString()</code> method is called
+ * Marker interface for text that must be rendered as an HTML content by the console. The <code>toString()</code> method is called
  * to retrieve the HTML text.
  * 
  * <p>
@@ -22,6 +22,6 @@ import java.io.Serializable;
  * @version $Revision$
  * @see <script>links('$HeadURL$');</script>
  */
-public interface HtmlPage extends Serializable {
+public interface HtmlContent extends Serializable {
 
 }

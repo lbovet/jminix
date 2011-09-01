@@ -184,8 +184,10 @@
                     }                
                     levelString = item.__id;
                     levelString = levelString.substring(0,levelString.length-1);
-                	level=levelString.split('/').length;
-                    if(item.label=="undefined") return "undefined";
+                	level=levelString.split('/').length;                	
+                    if(item.label==null) {
+                    	return "undefined";
+                    }
                     switch(level) {
                     case 1: return "servers";
                     case 2: return "server";

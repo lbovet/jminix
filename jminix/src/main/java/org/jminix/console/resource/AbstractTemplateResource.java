@@ -45,7 +45,7 @@ import org.restlet.resource.StringRepresentation;
 import org.restlet.resource.Variant;
 
 import org.jminix.server.ServerConnectionProvider;
-import org.jminix.type.HtmlPage;
+import org.jminix.type.HtmlContent;
 
 public abstract class AbstractTemplateResource extends Resource
 {
@@ -116,8 +116,9 @@ public abstract class AbstractTemplateResource extends Resource
 
             Map<String, Object> enrichedModel = new HashMap<String, Object>(getModel());
 
-            if(enrichedModel.get("value") instanceof HtmlPage) {
-            	return new StringRepresentation(enrichedModel.get("value").toString(), MediaType.TEXT_HTML);
+            String templateName = getTemplateName();
+            if(enrichedModel.get("value") instanceof HtmlContent) {
+            	templateName = "html-attribute";
             }
             
             Template template;
@@ -127,7 +128,7 @@ public abstract class AbstractTemplateResource extends Resource
                         (VelocityEngine) getContext().getAttributes().get(
                                 VELOCITY_ENGINE_CONTEX_KEY);
 
-                template = ve.getTemplate("jminix/templates/" + getTemplateName() + ".vm");
+                template = ve.getTemplate("jminix/templates/" + templateName + ".vm");
             }
             catch (Exception e)
             {
@@ -230,7 +231,7 @@ public abstract class AbstractTemplateResource extends Resource
             {
                 if (getModel().containsKey("value"))
                 {
-                	if(getModel().get("value") instanceof HtmlPage) {
+                	if(getModel().get("value") instanceof HtmlContent) {
                 		result.put("value", "Double-click to open page...");
                 	} else {
                 		result.put("value", getModel().get("value").toString());
