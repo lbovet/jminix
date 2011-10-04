@@ -135,10 +135,19 @@ public abstract class AbstractTemplateResource extends Resource
                 throw new RuntimeException(e);
             }
             
-            String skin = getRequest().getResourceRef().getQueryAsForm().getValues("skin");            
+            String skin = getRequest().getResourceRef().getQueryAsForm().getValues("skin");                       
+            if(skin==null) {
+            	skin="default";
+            }
+            String desc = getRequest().getResourceRef().getQueryAsForm().getValues("desc");  
+            if(desc==null) {
+            	desc="on";
+            }
             enrichedModel.put("query", getQueryString());
             enrichedModel.put("ok", "1".equals(getRequest().getResourceRef().getQueryAsForm().getValues("ok")));
             enrichedModel.put("margin", "embedded".equals(skin) ? 0 : 5);
+            enrichedModel.put("skin", skin);
+            enrichedModel.put("desc", desc);
             enrichedModel.put("encoder", new EncoderBean());
             enrichedModel.put("request", getRequest());
 
@@ -213,7 +222,7 @@ public abstract class AbstractTemplateResource extends Resource
 
                     if (item instanceof MBeanAttributeInfo)
                     {
-                        ref.put("$ref", ((MBeanAttributeInfo) item).getName() + "/");
+                        ref.put("$ref", new EncoderBean().encode(((MBeanAttributeInfo) item).getName()) + "/");
                     }
                     else if (item instanceof Map && ((Map) item).containsKey("declaration"))
                     {

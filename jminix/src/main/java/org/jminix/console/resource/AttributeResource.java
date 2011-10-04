@@ -36,6 +36,8 @@ import javax.management.RuntimeErrorException;
 import javax.management.openmbean.CompositeData;
 import javax.management.openmbean.TabularData;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.restlet.Context;
 import org.restlet.data.Form;
 import org.restlet.data.Request;
@@ -46,6 +48,8 @@ import org.restlet.resource.ResourceException;
 public class AttributeResource extends AbstractTemplateResource
 {
     
+	private static Log log = LogFactory.getLog(AttributeResource.class); 
+	
     public AttributeResource(Context context, Request request, Response response)
     {
         super(context, request, response);
@@ -117,6 +121,7 @@ public class AttributeResource extends AbstractTemplateResource
         	if(targetException instanceof RuntimeErrorException) {
         		throw new RuntimeException(targetException.getCause());
         	}
+        	log.warn("Error accessing attribute", e);
             model.put("value", e.getTargetException().getCause().getMessage());
             return model;
         }
@@ -130,6 +135,7 @@ public class AttributeResource extends AbstractTemplateResource
         }
         catch(RuntimeException e) {
             model.put("value", e.getMessage());
+            log.warn("Error accessing attribute", e);
             return model;
         }
     }

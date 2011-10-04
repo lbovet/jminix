@@ -1,4 +1,6 @@
+#if($skin!="raw")
     	</div>
 	</div>
+#end	
     </body>
 </html>

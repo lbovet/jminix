@@ -1,7 +1,11 @@
 #set( $title="Server $request.attributes.get('server') > $encoder.decode($request.attributes.get('domain')) > $encoder.decode($request.attributes.get('mbean')) > $encoder.decode($request.attributes.get('attribute'))" )
 #set( $name="$encoder.decode($request.attributes.get('attribute')) - $encoder.decode($request.attributes.get('mbean'))" )
 #parse("jminix/templates/header.vm")
+#if($desc!="off")
 $attribute.description
+#end
 <br><br>
+<div style="width:100%;overflow-x: scroll;">
 $value
+</div>
 #parse("jminix/templates/footer.vm")

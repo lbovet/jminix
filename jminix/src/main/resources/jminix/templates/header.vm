@@ -11,10 +11,11 @@
     
     </head>
     <body>
+#if($skin!="raw")
    <div style="margin:${margin}px;">
     
 		<div class="box" style="margin-bottom: 5px">          
              <b>$title</b>
          </div>
 	    <div class="box">
-
+#end

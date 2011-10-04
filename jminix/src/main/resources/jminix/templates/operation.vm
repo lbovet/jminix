@@ -1,14 +1,19 @@
 #set( $title="Server $request.attributes.get('server') > $encoder.decode($request.attributes.get('domain')) > $encoder.decode($request.attributes.get('mbean')) > $operation.name" )
 #set( $name="$operation.name  - $encoder.decode($request.attributes.get('mbean'))")
 #parse("jminix/templates/header.vm")
-
+#if($desc!="off")
 $operation.description
+#end
 <br>
 <form method="POST">
 <table border=0>
 #foreach( $param in $operation.signature )
 <tr>
-	<td>$param.type <b>$param.name</b> </td><td> <input type="text" size="50" name="param"/> ($param.description)</td>	
+	<td>$param.type <b>$param.name</b> </td><td> <input type="text" size="50" name="param"/> 
+#if($param.description && !$param.description.equals(""))
+	($param.description)
+#end if	
+</td>	
 </tr>
 #end
 
@@ -16,9 +21,11 @@ $operation.description
 <input type="hidden" name="executed" value="true"/>
 <input type="submit" value="execute"/>
 #if($ok)
-<span style="color:green">Done</span>
+<span id="fade" style="color:green">Done</span>
 #end
 </form>
-
+<script>
+setTimeout("document.getElementById('fade').style.display='none'",2000)
+</script>
 </body>
 </html>

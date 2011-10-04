@@ -1,7 +1,9 @@
 #set( $title="Server $request.attributes.get('server') > $encoder.decode($request.attributes.get('domain')) > $encoder.decode($request.attributes.get('mbean')) > $encoder.decode($request.attributes.get('attribute'))" )
 #set( $name="$encoder.decode($request.attributes.get('attribute'))" )
 #parse('jminix/templates/header.vm')
+#if($desc!="off")
 $attribute.description
+#end
 <ul>
 #foreach( $i in $items)
 <li>	
