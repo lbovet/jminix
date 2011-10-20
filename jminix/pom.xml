@@ -4,7 +4,7 @@
 	<groupId>org.jminix</groupId>
 	<artifactId>jminix</artifactId>
 	<name>jminix</name>
-	<version>1.0.0</version>
+	<version>1.1.0-SNAPSHOT</version>
 	<description>A simple embeddable restful JMX console</description>
 	<packaging>jar</packaging>
 	<url>http://www.jminix.org</url>
@@ -18,9 +18,9 @@
 	</licenses>
 
 	<scm>
-		<connection>scm:svn:http://jminix.googlecode.com/svn/tags/jminix-0.9</connection>
-		<developerConnection>scm:svn:https://jminix.googlecode.com/svn/tags/jminix-0.9</developerConnection>
-		<url>http://code.google.com/p/jminix/source/browse/tags/jminix-0.9</url>
+		<connection>scm:svn:http://jminix.googlecode.com/svn/trunk/jminix</connection>
+		<developerConnection>scm:svn:https://jminix.googlecode.com/svn/trunk/jminix</developerConnection>
+		<url>http://code.google.com/p/jminix/source/browse/trunk/jminix</url>
 	</scm>
 
 	<developers>
