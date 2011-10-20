@@ -5,7 +5,5 @@
 $attribute.description
 #end
 <br><br>
-<div style="padding-bottom:16px;width:100%;overflow-x:auto;overflow-y:hidden;">
 $value
-</div>
 #parse("jminix/templates/footer.vm")
