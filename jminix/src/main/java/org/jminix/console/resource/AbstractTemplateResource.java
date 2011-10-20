@@ -241,7 +241,7 @@ public abstract class AbstractTemplateResource extends Resource
                 if (getModel().containsKey("value"))
                 {
                 	if(getModel().get("value") instanceof HtmlContent) {
-                		result.put("value", "Double-click to open page...");
+                		result.put("value", "...");
                 	} else {
                 		result.put("value", getModel().get("value").toString());
                 	}
