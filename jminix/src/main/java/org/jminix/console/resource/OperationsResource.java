@@ -68,6 +68,12 @@ public class OperationsResource extends AbstractListResource
             for( MBeanOperationInfo info : server.getMBeanInfo(new ObjectName(domain+":"+mbean)).getOperations() ) {
                 Map<String, Object> pair = new HashMap<String, Object>();
                 
+                // Skip getters
+                Object role = info.getDescriptor().getFieldValue("role");
+                if( role==null && info.getName().startsWith("get") && info.getSignature().length == 0 || "getter".equals(role) ) {
+                	continue;
+                }
+                
                 StringBuilder sb = new StringBuilder(info.getName()+"(");
                 boolean first=true;
                 for(MBeanParameterInfo p: info.getSignature()) {
