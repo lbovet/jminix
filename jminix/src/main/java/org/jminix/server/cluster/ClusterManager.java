@@ -93,10 +93,6 @@ public abstract class ClusterManager extends ReceiverAdapter {
 			channel.setReceiver(this);
 			log.debug("Connecting to cluster "+clusterName);
 			channel.connect(clusterName);
-			// Send node information to others
-			channel.send(new Message(null, null, encrypt(thisNode())));
-			// Get node information from others
-			channel.getState(null, 2000);
 			
 		} catch (ChannelException e) {
 			throw new RuntimeException(e);
@@ -147,9 +143,15 @@ public abstract class ClusterManager extends ReceiverAdapter {
 	 */
 	@Override
 	public void viewAccepted(View view) {	
-		// Cluster has changed. Delete the members that have disappeared.
+		// Cluster has changed. Delete nodes that have disappeared.
 		nodes.keySet().retainAll(view.getMembers());
-		updateProvider();
+		
+		// Make sure that others see me.
+		try {
+			channel.send(new Message(null, null, encrypt(thisNode())));
+		} catch (ChannelException e) {
+			throw new RuntimeException(e);
+		} 
 	}
 
 	/**
@@ -196,39 +198,6 @@ public abstract class ClusterManager extends ReceiverAdapter {
 			log.debug("Could not deserialize:", e);
 			return null;
 		}			
-	}
-
-	/**
-	 * Not explicitly documented.
-	 * @see org.jgroups.ReceiverAdapter#getState()
-	 */
-	@Override
-	public byte[] getState() {
-		try {
-			return Util.objectToByteBuffer(nodes);
-		} catch (Exception e) {
-			throw new RuntimeException(e);
-		}
-	}
-	
-	/**
-	 * Not explicitly documented.
-	 * @see org.jgroups.ReceiverAdapter#setState(byte[])
-	 */
-	@Override
-	public void setState(byte[] buffer) {
-		Object o;
-		try {
-			o = Util.objectFromByteBuffer(buffer);
-		} catch (Exception e) {
-			throw new RuntimeException(e);
-		}
-		if(o instanceof Map) {
-			@SuppressWarnings("unchecked")
-			Map<Address,Node> nodeFromOthers = (Map<Address,Node>)o;
-			nodes.putAll(nodeFromOthers);
-		}
-		updateProvider();
 	}
 
 	private synchronized void updateProvider() {
