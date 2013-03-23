@@ -57,7 +57,7 @@ public class OperationsResource extends AbstractListResource
     {
         String domain = getRequest().getAttributes().get("domain").toString();
         
-        String mbean = new EncoderBean().decode(getRequest().getAttributes().get("mbean").toString());        
+        String mbean = unescape(new EncoderBean().decode(getRequest().getAttributes().get("mbean").toString()));        
         
         try
         {

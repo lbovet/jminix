@@ -222,7 +222,7 @@ public abstract class AbstractTemplateResource extends Resource
 
                     if (item instanceof MBeanAttributeInfo)
                     {
-                        ref.put("$ref", new EncoderBean().encode(((MBeanAttributeInfo) item).getName()) + "/");
+                        ref.put("$ref", new EncoderBean().encode(escape(((MBeanAttributeInfo) item).getName())) + "/");
                     }
                     else if (item instanceof Map && ((Map) item).containsKey("declaration"))
                     {
@@ -230,7 +230,7 @@ public abstract class AbstractTemplateResource extends Resource
                     }
                     else
                     {
-                        ref.put("$ref", item.toString() + "/");
+                        ref.put("$ref", escape(item.toString()) + "/");
                     }
                     children.add(ref);
                 }
@@ -290,5 +290,13 @@ public abstract class AbstractTemplateResource extends Resource
     protected String getQueryString() {
     	String query = getRequest().getResourceRef().getQuery();
     	return query!=null ? "?"+query : "";
+    }
+    
+    protected String escape(String value) {
+        return value.replaceAll("/", "¦");
+    }
+    
+    protected String unescape(String value) {
+        return value.replaceAll("¦", "/");
     }
 }

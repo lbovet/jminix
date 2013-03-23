@@ -62,9 +62,9 @@ public class AttributeResource extends AbstractTemplateResource
     {
         String domain = getRequest().getAttributes().get("domain").toString();
         
-        String mbean = new EncoderBean().decode(getRequest().getAttributes().get("mbean").toString());
+        String mbean = unescape(new EncoderBean().decode(getRequest().getAttributes().get("mbean").toString()));
         
-        String attribute = new EncoderBean().decode(getRequest().getAttributes().get("attribute").toString());
+        String attribute = unescape(new EncoderBean().decode(getRequest().getAttributes().get("attribute").toString()));
         
         Map<String, Object> model = new HashMap<String, Object>();
         
@@ -147,9 +147,9 @@ public class AttributeResource extends AbstractTemplateResource
 
         String domain = getRequest().getAttributes().get("domain").toString();
         
-        String mbean = new EncoderBean().decode(getRequest().getAttributes().get("mbean").toString());
+        String mbean = unescape(new EncoderBean().decode(getRequest().getAttributes().get("mbean").toString()));
                
-        String attributeName = new EncoderBean().decode(getRequest().getAttributes().get("attribute").toString());
+        String attributeName = unescape(new EncoderBean().decode(getRequest().getAttributes().get("attribute").toString()));
         
         MBeanServerConnection server = getServer();
         

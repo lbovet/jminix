@@ -52,7 +52,7 @@ public class MBeansResource extends AbstractListResource
             List<String> result = new ArrayList<String>();
             
             for(Object name : names) {
-                result.add(name.toString().substring(domain.length()+1));
+                result.add(escape(name.toString().substring(domain.length()+1)));
             }
             Collections.sort(result);
             
