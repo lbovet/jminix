@@ -39,6 +39,7 @@ import javax.management.openmbean.TabularData;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.jminix.type.AttributeFilter;
 import org.restlet.Context;
 import org.restlet.data.Form;
 import org.restlet.data.Request;
@@ -50,10 +51,12 @@ public class AttributeResource extends AbstractTemplateResource
 {
     
 	private static Log log = LogFactory.getLog(AttributeResource.class); 
+	private AttributeFilter attributeFilter;
 	
     public AttributeResource(Context context, Request request, Response response)
     {
         super(context, request, response);
+        attributeFilter = (AttributeFilter)context.getAttributes().get("attributeFilter");
     }
 
     private String templateName = "attribute";
@@ -65,7 +68,7 @@ public class AttributeResource extends AbstractTemplateResource
         
         String mbean = unescape(new EncoderBean().decode(getRequest().getAttributes().get("mbean").toString()));
         
-        String attribute = unescape(new EncoderBean().decode(getRequest().getAttributes().get("attribute").toString()));
+        String attribute = unescape(new EncoderBean().decode(getRequest().getAttributes().get("attribute").toString()));                
         
         Map<String, Object> model = new HashMap<String, Object>();
         
@@ -107,12 +110,12 @@ public class AttributeResource extends AbstractTemplateResource
                 }
             } else if(value instanceof CompositeData){
                 templateName = "composite-attribute";
-                model.put("attribute", value);
+                model.put("attribute", filter(value));
             } else if(value instanceof TabularData){
                 templateName = "tabular-attribute";
-                model.put("attribute", value);
+                model.put("attribute", filter(value));
             } else {
-                model.put("value", value);
+                model.put("value", filter(value));
             }
                                      
             return model;
@@ -172,8 +175,7 @@ public class AttributeResource extends AbstractTemplateResource
         MBeanServerConnection server = getServer();
         
         try
-        {
-            
+        {            
             String type = "java.lang.String";
             for(MBeanAttributeInfo info : server.getMBeanInfo(new ObjectName(domain+":"+mbean)).getAttributes()) {
                 if(info.getName().equals(attributeName)) {
@@ -229,8 +231,6 @@ public class AttributeResource extends AbstractTemplateResource
                 
     }
     
-    
-    
     @Override
     public boolean allowPost()
     {
@@ -243,6 +243,11 @@ public class AttributeResource extends AbstractTemplateResource
         return templateName;
     }
 
-
-
+    private Object filter(Object object) {
+        if(attributeFilter != null) {
+            return attributeFilter.filter(object);
+        } else {
+            return object;
+        }
+    }
 }

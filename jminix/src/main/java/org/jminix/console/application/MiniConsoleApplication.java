@@ -21,17 +21,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 
-import org.restlet.Application;
-import org.restlet.Context;
-import org.restlet.Directory;
-import org.restlet.Restlet;
-import org.restlet.Router;
-import org.restlet.data.MediaType;
-import org.restlet.data.Protocol;
-import org.restlet.data.Request;
-import org.restlet.data.Response;
-import org.restlet.resource.StreamRepresentation;
-
 import org.jminix.console.resource.AttributeResource;
 import org.jminix.console.resource.AttributesResource;
 import org.jminix.console.resource.DomainResource;
@@ -44,6 +33,17 @@ import org.jminix.console.resource.ServerResource;
 import org.jminix.console.resource.ServersResource;
 import org.jminix.server.DefaultLocalServerConnectionProvider;
 import org.jminix.server.ServerConnectionProvider;
+import org.jminix.type.AttributeFilter;
+import org.restlet.Application;
+import org.restlet.Context;
+import org.restlet.Directory;
+import org.restlet.Restlet;
+import org.restlet.Router;
+import org.restlet.data.MediaType;
+import org.restlet.data.Protocol;
+import org.restlet.data.Request;
+import org.restlet.data.Response;
+import org.restlet.resource.StreamRepresentation;
 
 public class MiniConsoleApplication extends Application
 {    
@@ -51,7 +51,9 @@ public class MiniConsoleApplication extends Application
         configureLog(null);
     }
     
-    ServerConnectionProvider serverConnectionProvider = new DefaultLocalServerConnectionProvider();
+    private ServerConnectionProvider serverConnectionProvider = new DefaultLocalServerConnectionProvider();
+    
+    private AttributeFilter attributeFilter;
     
     @Override
     public Restlet createRoot()
@@ -60,7 +62,8 @@ public class MiniConsoleApplication extends Application
         
         getConnectorService().getClientProtocols().add(Protocol.CLAP);
         
-        getContext().getAttributes().put("serverProvider", serverConnectionProvider);
+        getContext().getAttributes().put("serverProvider", serverConnectionProvider);        
+        getContext().getAttributes().put("attributeFilter", attributeFilter);
         
         final Directory jsDirectory = new Directory(getContext(),
                 "clap://class/jminix/js");
@@ -119,6 +122,10 @@ public class MiniConsoleApplication extends Application
     public void setServerConnectionProvider(ServerConnectionProvider serverConnectionProvider)
     {
         this.serverConnectionProvider = serverConnectionProvider;
+    }
+    
+    public void setAttributeFilter(AttributeFilter filter) {
+        attributeFilter = filter;
     }
     
     protected static void configureLog(Context context) {

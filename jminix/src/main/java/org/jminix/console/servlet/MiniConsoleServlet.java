@@ -25,6 +25,7 @@ import org.restlet.data.Protocol;
 
 import org.jminix.console.application.MiniConsoleApplication;
 import org.jminix.server.ServerConnectionProvider;
+import org.jminix.type.AttributeFilter;
 
 import com.noelios.restlet.ext.servlet.ServerServlet;
 import com.noelios.restlet.ext.servlet.ServletContextAdapter;
@@ -72,6 +73,31 @@ public class MiniConsoleServlet extends ServerServlet
             }
             
         }            
+        
+        String attributeFilterClassName = getInitParameter("attributeFilter");        
+        
+        if(attributeFilterClassName != null) {
+
+            try
+            {
+                @SuppressWarnings("unchecked")
+                Class<AttributeFilter> attributeFilter = (Class<AttributeFilter>) loadClass(attributeFilterClassName);
+                app.setAttributeFilter(attributeFilter.newInstance());
+            }
+            catch (ClassNotFoundException e)
+            {
+                throw new RuntimeException(e);
+            }
+            catch (InstantiationException e)
+            {
+                throw new RuntimeException(e);
+            }
+            catch (IllegalAccessException e)
+            {
+                throw new RuntimeException(e);
+            }
+            
+        }             
         
         super.init();
         
