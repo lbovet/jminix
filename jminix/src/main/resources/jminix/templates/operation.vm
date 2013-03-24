@@ -22,10 +22,10 @@ $operation.description
 <input type="submit" value="execute"/>
 #if($ok)
 <span id="fade" style="color:green">Done</span>
-#end
-</form>
 <script>
 setTimeout("document.getElementById('fade').style.display='none'",2000)
 </script>
+#end
+</form>
 </body>
 </html>

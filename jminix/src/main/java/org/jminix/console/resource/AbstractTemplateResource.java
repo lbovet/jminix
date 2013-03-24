@@ -32,8 +32,12 @@ import net.sf.json.JSONSerializer;
 
 import org.apache.velocity.Template;
 import org.apache.velocity.app.VelocityEngine;
+import org.jminix.server.ServerConnectionProvider;
+import org.jminix.type.HtmlContent;
 import org.restlet.Context;
+import org.restlet.data.CharacterSet;
 import org.restlet.data.Form;
+import org.restlet.data.Language;
 import org.restlet.data.MediaType;
 import org.restlet.data.Request;
 import org.restlet.data.Response;
@@ -43,9 +47,6 @@ import org.restlet.resource.Resource;
 import org.restlet.resource.ResourceException;
 import org.restlet.resource.StringRepresentation;
 import org.restlet.resource.Variant;
-
-import org.jminix.server.ServerConnectionProvider;
-import org.jminix.type.HtmlContent;
 
 public abstract class AbstractTemplateResource extends Resource
 {
@@ -129,6 +130,7 @@ public abstract class AbstractTemplateResource extends Resource
                                 VELOCITY_ENGINE_CONTEX_KEY);
 
                 template = ve.getTemplate("jminix/templates/" + templateName + ".vm");
+                template.setEncoding("UTF-8");
             }
             catch (Exception e)
             {
@@ -176,6 +178,7 @@ public abstract class AbstractTemplateResource extends Resource
                 template =
                         ve.getTemplate("jminix/templates/"
                                 + getTemplateName() + "-plain.vm");
+                template.setEncoding("UTF-8");
             }
             catch (Exception e)
             {
@@ -263,11 +266,11 @@ public abstract class AbstractTemplateResource extends Resource
             if ("servers".equals(getRequest().getOriginalRef().getLastSegment(true)))
             {
                 return new StringRepresentation(JSONSerializer.toJSON(new Object[]{result})
-                        .toString());
+                        .toString(), MediaType.APPLICATION_JSON, Language.ALL, CharacterSet.UTF_8);
             }
             else
             {
-                return new StringRepresentation(JSONSerializer.toJSON(result).toString());
+                return new StringRepresentation(JSONSerializer.toJSON(result).toString(), MediaType.APPLICATION_JSON, Language.ALL, CharacterSet.UTF_8 );
             }
         }
         else

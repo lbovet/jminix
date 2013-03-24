@@ -18,7 +18,6 @@
 package org.jminix.server;
 
 import java.util.List;
-import java.util.Map;
 
 import javax.management.MBeanServerConnection;
 

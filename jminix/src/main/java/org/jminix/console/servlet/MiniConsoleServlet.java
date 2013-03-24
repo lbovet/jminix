@@ -19,13 +19,12 @@ package org.jminix.console.servlet;
 
 import javax.servlet.ServletException;
 
-import org.restlet.Application;
-import org.restlet.Context;
-import org.restlet.data.Protocol;
-
 import org.jminix.console.application.MiniConsoleApplication;
 import org.jminix.server.ServerConnectionProvider;
 import org.jminix.type.AttributeFilter;
+import org.restlet.Application;
+import org.restlet.Context;
+import org.restlet.data.Protocol;
 
 import com.noelios.restlet.ext.servlet.ServerServlet;
 import com.noelios.restlet.ext.servlet.ServletContextAdapter;

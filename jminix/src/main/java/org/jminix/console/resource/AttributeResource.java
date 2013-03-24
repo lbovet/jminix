@@ -190,10 +190,14 @@ public class AttributeResource extends AbstractTemplateResource
             }
             
         	String queryString = getQueryString();
-        	if(queryString==null) {
-        		queryString = "?";
-        	}
-        	queryString+="ok=1";
+            if(!queryString.contains("ok=1")) {
+                if(queryString==null || "".equals(queryString)) {
+                    queryString = "?";
+                } else {
+                    queryString += "&";
+                }
+                queryString+="ok=1";
+            }
             getResponse().redirectPermanent(new EncoderBean().encode(attributeName)+queryString);
         }
         catch (InstanceNotFoundException e)

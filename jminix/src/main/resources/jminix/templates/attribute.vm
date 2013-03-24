@@ -5,7 +5,14 @@
 $attribute.description
 #end
 #if ($attribute.writable)
-<form method="POST"><input type="text" name="value" value="$value"/><input type="submit" value="update"/></form>
+<form method="POST"><input type="text" name="value" value="$value"/><input type="submit" value="update"/>
+#if($ok)
+<span id="fade" style="color:green">Done</span>
+<script>
+setTimeout("document.getElementById('fade').style.display='none'",2000)
+</script>
+#end
+</form>
 #else
 <pre>
 $value

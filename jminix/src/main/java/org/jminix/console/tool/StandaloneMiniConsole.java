@@ -17,10 +17,9 @@
 
 package org.jminix.console.tool;
 
+import org.jminix.console.application.MiniConsoleApplication;
 import org.restlet.Component;
 import org.restlet.data.Protocol;
-
-import org.jminix.console.application.MiniConsoleApplication;
 
 /**
  * Runs the Mini Console standalone without servlet container.
