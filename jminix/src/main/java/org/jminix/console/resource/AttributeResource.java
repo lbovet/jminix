@@ -20,6 +20,7 @@ package org.jminix.console.resource;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 
 import javax.management.Attribute;
 import javax.management.AttributeNotFoundException;
@@ -86,7 +87,24 @@ public class AttributeResource extends AbstractTemplateResource
                 model.put("value", "<null>");
             } else if(value.getClass().isArray()) {
                 templateName = "array-attribute";
-                model.put("items", value);
+                if(value.getClass().getComponentType().isAssignableFrom(CompositeData.class)) {                    
+                    CompositeData[] data = (CompositeData[])value;
+                    String[] values = new String[data.length];
+                    for(int i=0; i<data.length; i++) {
+                        Set<String> keys = data[i].getCompositeType().keySet();
+                        StringBuilder sb = new StringBuilder("{");
+                        for(String key: keys) {
+                            sb.append(key);
+                            sb.append(": ");
+                            sb.append(data[i].get(key));
+                        }
+                        sb.append("}");
+                        values[i]=sb.toString();
+                    }
+                    model.put("items", values);
+                } else {
+                    model.put("items", value);
+                }
             } else if(value instanceof CompositeData){
                 templateName = "composite-attribute";
                 model.put("attribute", value);
