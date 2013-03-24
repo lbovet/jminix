@@ -251,7 +251,7 @@ public abstract class AbstractTemplateResource extends Resource
                 	Object items = getModel().get("items");
                 	String value = null;
                 	if(items.getClass().isArray()) {
-                		value = Arrays.deepToString((Object[])items);
+                		value = Arrays.deepToString(Arrays.asList(items).toArray());
                 	} else {
                 		value = items.toString();
                 	}
