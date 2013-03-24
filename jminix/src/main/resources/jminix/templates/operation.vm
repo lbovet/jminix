@@ -12,7 +12,7 @@ $operation.description
 	<td>$param.type <b>$param.name</b> </td><td> <input type="text" size="50" name="param"/> 
 #if($param.description && !$param.description.equals(""))
 	($param.description)
-#end if	
+#end
 </td>	
 </tr>
 #end

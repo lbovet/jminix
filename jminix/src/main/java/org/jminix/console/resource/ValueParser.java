@@ -17,8 +17,19 @@
 
 package org.jminix.console.resource;
 
+import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang.Validate;
+
 public class ValueParser
 {
+	private static String stringArraySeparator = ";";
+	
+	public static void setStringArraySeparator(String separator) 
+	{
+		Validate.notNull(separator);
+		stringArraySeparator = separator;
+	}
+	
     public Object parse(String value, String type)
     {
         Object result=null;
@@ -35,7 +46,9 @@ public class ValueParser
             result = new Long(value);
         } else if( type.equals("java.lang.Boolean") || type.equals("boolean")) {
             result = new Boolean(value);
-        }   
+        } else if( type.equals("[Ljava.lang.String;")) {
+        	result = StringUtils.splitPreserveAllTokens(value, stringArraySeparator);
+        }
         
         if(result==null) {
             throw new RuntimeException("Type "+type+" is not supported");

@@ -20,6 +20,7 @@ package org.jminix.console.servlet;
 import javax.servlet.ServletException;
 
 import org.jminix.console.application.MiniConsoleApplication;
+import org.jminix.console.resource.ValueParser;
 import org.jminix.server.ServerConnectionProvider;
 import org.jminix.type.AttributeFilter;
 import org.restlet.Application;
@@ -49,6 +50,10 @@ public class MiniConsoleServlet extends ServerServlet
         app = new MiniConsoleApplication();
         
         String providerClassName = getInitParameter("serverConnectionProvider");        
+        String stringArraySeparator = getInitParameter("stringArraySeparator");
+        if(stringArraySeparator != null) {
+        	ValueParser.setStringArraySeparator(stringArraySeparator);
+        }
         
         if(providerClassName != null) {
 
