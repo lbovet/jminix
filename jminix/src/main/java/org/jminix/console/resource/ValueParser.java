@@ -44,6 +44,10 @@ public class ValueParser
             result = new Integer(value);
         } else if( type.equals("java.lang.Long") || type.equals("long")) {
             result = new Long(value);
+        } else if( type.equals("java.lang.Double") || type.equals("double")) {
+            result = new Double(value);      
+        } else if( type.equals("java.lang.Float") || type.equals("float")) {
+            result = new Float(value);               
         } else if( type.equals("java.lang.Boolean") || type.equals("boolean")) {
             result = new Boolean(value);
         } else if( type.equals("[Ljava.lang.String;")) {

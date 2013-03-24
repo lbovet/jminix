@@ -62,8 +62,10 @@ public class MiniConsoleApplication extends Application
         
         getConnectorService().getClientProtocols().add(Protocol.CLAP);
         
-        getContext().getAttributes().put("serverProvider", serverConnectionProvider);        
-        getContext().getAttributes().put("attributeFilter", attributeFilter);
+        getContext().getAttributes().put("serverProvider", serverConnectionProvider); 
+        if(attributeFilter != null) {
+            getContext().getAttributes().put("attributeFilter", attributeFilter);
+        }
         
         final Directory jsDirectory = new Directory(getContext(),
                 "clap://class/jminix/js");
