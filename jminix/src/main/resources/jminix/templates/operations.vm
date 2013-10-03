@@ -8,7 +8,9 @@
 	<a href='$encoder.encode($pair.declaration)/$query'>$pair.operation.name</a>
 </dt>
 <dd>
-	$pair.operation.description<br>
+    #if($pair.operation.description)
+        $!{pair.operation.description}<br>
+    #end
 	<tt><b>$pair.operation.name</b>(
 	#foreach( $param in $pair.operation.signature )
 		$param.type $param.name,		

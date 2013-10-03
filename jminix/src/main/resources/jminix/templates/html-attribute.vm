@@ -2,7 +2,7 @@
 #set( $name="$encoder.decode($request.attributes.get('attribute')) - $encoder.decode($request.attributes.get('mbean'))" )
 #parse("jminix/templates/header.vm")
 #if($desc!="off")
-$attribute.description
+$!{attribute.description}
 #end
 <br><br>
 $value

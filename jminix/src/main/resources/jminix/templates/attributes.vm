@@ -7,7 +7,7 @@
 	<a href="$encoder.encode($attribute.name)/$query">$attribute.name</a> ($attribute.type)
 </dt>
 <dd>
-	$attribute.description 
+	$!{attribute.description}
 	#if (! $attribute.writable )
 	(ro)
 	#end
