@@ -17,13 +17,13 @@
 
 package org.jminix.console.resource;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 import org.restlet.Context;
 import org.restlet.data.Request;
 import org.restlet.data.Response;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public abstract class AbstractListResource extends AbstractTemplateResource
 {
@@ -40,7 +40,7 @@ public abstract class AbstractListResource extends AbstractTemplateResource
     protected final Map<String, Object> getModel()
     {
         HashMap<String,Object> result = new HashMap<String,Object>();
-        
+
         result.put("items", getList());
         
         return result;

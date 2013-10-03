@@ -17,14 +17,14 @@
 
 package org.jminix.console.resource;
 
+import org.restlet.Context;
+import org.restlet.data.Request;
+import org.restlet.data.Response;
+
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
-
-import org.restlet.Context;
-import org.restlet.data.Request;
-import org.restlet.data.Response;
 
 public class DomainsResource extends AbstractListResource
 {
@@ -40,6 +40,9 @@ public class DomainsResource extends AbstractListResource
         try
         {
             List<String> result= Arrays.asList(getServer().getDomains());
+            for (int i = 0; i < result.size(); i++) {
+                result.set(i, escape(result.get(i)));
+            }
             Collections.sort(result);
             return result;
         }

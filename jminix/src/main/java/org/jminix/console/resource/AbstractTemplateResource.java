@@ -17,42 +17,26 @@
 
 package org.jminix.console.resource;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Properties;
-
-import javax.management.MBeanAttributeInfo;
-import javax.management.MBeanServerConnection;
-
 import net.sf.json.JSONSerializer;
-
 import org.apache.velocity.Template;
 import org.apache.velocity.app.VelocityEngine;
 import org.jminix.server.ServerConnectionProvider;
 import org.jminix.type.HtmlContent;
 import org.restlet.Context;
-import org.restlet.data.CharacterSet;
-import org.restlet.data.Form;
-import org.restlet.data.Language;
-import org.restlet.data.MediaType;
-import org.restlet.data.Request;
-import org.restlet.data.Response;
+import org.restlet.data.*;
 import org.restlet.ext.velocity.TemplateRepresentation;
-import org.restlet.resource.Representation;
-import org.restlet.resource.Resource;
-import org.restlet.resource.ResourceException;
-import org.restlet.resource.StringRepresentation;
-import org.restlet.resource.Variant;
+import org.restlet.resource.*;
+
+import javax.management.MBeanAttributeInfo;
+import javax.management.MBeanServerConnection;
+import java.util.*;
 
 public abstract class AbstractTemplateResource extends Resource
 {
 	public String a;
 	
     private final static String VELOCITY_ENGINE_CONTEX_KEY = "template.resource.velocity.engine";
+    protected final EncoderBean encoder = new EncoderBean();
 
     public AbstractTemplateResource(Context context, Request request, Response response)
     {
@@ -185,7 +169,7 @@ public abstract class AbstractTemplateResource extends Resource
                 throw new RuntimeException(e);
             }
 
-            enrichedModel.put("encoder", new EncoderBean());
+            enrichedModel.put("encoder", encoder);
             enrichedModel.put("request", getRequest());
 
             return new TemplateRepresentation(template, enrichedModel, MediaType.TEXT_PLAIN);
@@ -196,7 +180,7 @@ public abstract class AbstractTemplateResource extends Resource
             // Translate known models, needs a refactoring to embed that in each resource...
             HashMap<String, Object> result = new HashMap<String, Object>();
 
-            result.put("label", getRequest().getOriginalRef().getLastSegment(true));
+            result.put("label", unescape(getRequest().getOriginalRef().getLastSegment(true)));
 
             String beforeLast =
                     getRequest().getOriginalRef().getSegments().size() > 2 ? getRequest()
@@ -225,7 +209,7 @@ public abstract class AbstractTemplateResource extends Resource
 
                     if (item instanceof MBeanAttributeInfo)
                     {
-                        ref.put("$ref", new EncoderBean().encode(escape(((MBeanAttributeInfo) item).getName())) + "/");
+                        ref.put("$ref", encoder.encode(escape(((MBeanAttributeInfo) item).getName())) + "/");
                     }
                     else if (item instanceof Map && ((Map) item).containsKey("declaration"))
                     {
@@ -233,7 +217,7 @@ public abstract class AbstractTemplateResource extends Resource
                     }
                     else
                     {
-                        ref.put("$ref", escape(item.toString()) + "/");
+                        ref.put("$ref", encoder.encode(escape(item.toString())) + "/");
                     }
                     children.add(ref);
                 }
@@ -287,19 +271,23 @@ public abstract class AbstractTemplateResource extends Resource
     
     protected MBeanServerConnection getServer()
     {
-        return getServerProvider().getConnection(getRequest().getAttributes().get("server").toString());
+        return getServerProvider().getConnection(getAttribute("server"));
     }
     
     protected String getQueryString() {
     	String query = getRequest().getResourceRef().getQuery();
     	return query!=null ? "?"+query : "";
     }
-    
-    protected String escape(String value) {
+
+    protected String getAttribute(String value) {
+        return encoder.decode(getRequest().getAttributes().get(value).toString());
+    }
+
+    public String escape(String value) {
         return value.replaceAll("/", "¦");
     }
-    
-    protected String unescape(String value) {
+
+    public String unescape(String value) {
         return value.replaceAll("¦", "/");
     }
 }

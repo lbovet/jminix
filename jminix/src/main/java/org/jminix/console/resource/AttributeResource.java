@@ -17,26 +17,6 @@
 
 package org.jminix.console.resource;
 
-import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Set;
-
-import javax.management.Attribute;
-import javax.management.AttributeNotFoundException;
-import javax.management.InstanceNotFoundException;
-import javax.management.IntrospectionException;
-import javax.management.InvalidAttributeValueException;
-import javax.management.MBeanAttributeInfo;
-import javax.management.MBeanException;
-import javax.management.MBeanServerConnection;
-import javax.management.MalformedObjectNameException;
-import javax.management.ObjectName;
-import javax.management.ReflectionException;
-import javax.management.RuntimeErrorException;
-import javax.management.openmbean.CompositeData;
-import javax.management.openmbean.TabularData;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.jminix.type.AttributeFilter;
@@ -46,6 +26,14 @@ import org.restlet.data.Request;
 import org.restlet.data.Response;
 import org.restlet.resource.Representation;
 import org.restlet.resource.ResourceException;
+
+import javax.management.*;
+import javax.management.openmbean.CompositeData;
+import javax.management.openmbean.TabularData;
+import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Set;
 
 public class AttributeResource extends AbstractTemplateResource
 {
@@ -64,33 +52,33 @@ public class AttributeResource extends AbstractTemplateResource
     @Override
     protected Map<String, Object> getModel()
     {
-        String domain = getRequest().getAttributes().get("domain").toString();
-        
-        String mbean = unescape(new EncoderBean().decode(getRequest().getAttributes().get("mbean").toString()));
-        
-        String attribute = unescape(new EncoderBean().decode(getRequest().getAttributes().get("attribute").toString()));                
-        
+        String domain = unescape(getAttribute("domain"));
+
+        String mbean = unescape(getAttribute("mbean"));
+
+        String attribute = getAttribute("attribute");
+
         Map<String, Object> model = new HashMap<String, Object>();
-        
+
         try
         {
             MBeanServerConnection server = getServer();
-            
+
             MBeanAttributeInfo info=null;
             for(MBeanAttributeInfo i: server.getMBeanInfo(new ObjectName(domain+":"+mbean)).getAttributes()) {
                 if(i.getName().equals(attribute)) {
                     info = i;
                 }
             }
-            
+
             Object value = server.getAttribute(new ObjectName(domain+":"+mbean), attribute);
-            
+
             model.put("attribute", info);
             if(value==null) {
                 model.put("value", "<null>");
             } else if(value.getClass().isArray()) {
                 templateName = "array-attribute";
-                if(value.getClass().getComponentType().isAssignableFrom(CompositeData.class)) {                    
+                if(value.getClass().getComponentType().isAssignableFrom(CompositeData.class)) {
                     CompositeData[] data = (CompositeData[])value;
                     String[] values = new String[data.length];
                     for(int i=0; i<data.length; i++) {
@@ -117,7 +105,7 @@ public class AttributeResource extends AbstractTemplateResource
             } else {
                 model.put("value", filter(value));
             }
-                                     
+
             return model;
         }
         catch (IOException e)
@@ -166,11 +154,11 @@ public class AttributeResource extends AbstractTemplateResource
     {
         String value = new Form(entity).getFirstValue("value");
 
-        String domain = getRequest().getAttributes().get("domain").toString();
+        String domain = unescape(getAttribute("domain"));
         
-        String mbean = unescape(new EncoderBean().decode(getRequest().getAttributes().get("mbean").toString()));
+        String mbean = unescape(getAttribute("mbean"));
                
-        String attributeName = unescape(new EncoderBean().decode(getRequest().getAttributes().get("attribute").toString()));
+        String attributeName = getAttribute("attribute");
         
         MBeanServerConnection server = getServer();
         
@@ -198,7 +186,7 @@ public class AttributeResource extends AbstractTemplateResource
                 }
                 queryString+="ok=1";
             }
-            getResponse().redirectPermanent(new EncoderBean().encode(attributeName)+queryString);
+            getResponse().redirectPermanent(encoder.encode(attributeName)+queryString);
         }
         catch (InstanceNotFoundException e)
         {

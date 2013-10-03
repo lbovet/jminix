@@ -17,25 +17,13 @@
 
 package org.jminix.console.resource;
 
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.Iterator;
-import java.util.List;
-
-import javax.management.InstanceNotFoundException;
-import javax.management.IntrospectionException;
-import javax.management.MBeanAttributeInfo;
-import javax.management.MBeanServerConnection;
-import javax.management.MalformedObjectNameException;
-import javax.management.ObjectName;
-import javax.management.ReflectionException;
-
 import org.restlet.Context;
 import org.restlet.data.Request;
 import org.restlet.data.Response;
+
+import javax.management.*;
+import java.io.IOException;
+import java.util.*;
 
 public class AttributesResource extends AbstractListResource
 {
@@ -56,9 +44,9 @@ public class AttributesResource extends AbstractListResource
     @Override
     protected List<? extends Object> getList()
     {
-        String domain = getRequest().getAttributes().get("domain").toString();
+        String domain = unescape(getAttribute("domain"));
         
-        String mbean = unescape(new EncoderBean().decode(getRequest().getAttributes().get("mbean").toString()));        
+        String mbean = unescape(getAttribute("mbean"));
         
         try
         {

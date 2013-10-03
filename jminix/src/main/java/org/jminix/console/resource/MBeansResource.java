@@ -17,18 +17,17 @@
 
 package org.jminix.console.resource;
 
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+import org.restlet.Context;
+import org.restlet.data.Request;
+import org.restlet.data.Response;
 
 import javax.management.MBeanServerConnection;
 import javax.management.MalformedObjectNameException;
 import javax.management.ObjectName;
-
-import org.restlet.Context;
-import org.restlet.data.Request;
-import org.restlet.data.Response;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 public class MBeansResource extends AbstractListResource
 {
@@ -41,7 +40,7 @@ public class MBeansResource extends AbstractListResource
     @Override
     protected List<? extends Object> getList()
     {        
-        String domain = getRequest().getAttributes().get("domain").toString();
+        String domain = unescape(getAttribute("domain"));
         
         try
         {

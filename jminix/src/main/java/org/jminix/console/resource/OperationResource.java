@@ -17,22 +17,7 @@
 
 package org.jminix.console.resource;
 
-import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
-
-import javax.management.InstanceNotFoundException;
-import javax.management.IntrospectionException;
-import javax.management.MBeanException;
-import javax.management.MBeanOperationInfo;
-import javax.management.MBeanParameterInfo;
-import javax.management.MBeanServerConnection;
-import javax.management.MalformedObjectNameException;
-import javax.management.ObjectName;
-import javax.management.ReflectionException;
-
 import net.sf.json.JSONSerializer;
-
 import org.restlet.Context;
 import org.restlet.data.Form;
 import org.restlet.data.MediaType;
@@ -41,6 +26,11 @@ import org.restlet.data.Response;
 import org.restlet.resource.Representation;
 import org.restlet.resource.ResourceException;
 import org.restlet.resource.Variant;
+
+import javax.management.*;
+import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 
 public class OperationResource extends AbstractTemplateResource
 {
@@ -55,11 +45,11 @@ public class OperationResource extends AbstractTemplateResource
     @Override
     protected Map<String, Object> getModel()
     {
-        String domain = getRequest().getAttributes().get("domain").toString();
+        String domain = unescape(getAttribute("domain"));
 
-        String mbean = unescape(new EncoderBean().decode(getRequest().getAttributes().get("mbean").toString()));
+        String mbean = unescape(getAttribute("mbean"));
 
-        String declaration = new EncoderBean().decode(getRequest().getAttributes().get("operation").toString());
+        String declaration = getAttribute("operation");
 
         String operation = declaration.split("\\(")[0];
 
@@ -80,11 +70,11 @@ public class OperationResource extends AbstractTemplateResource
         String[] stringParams = new Form(entity).getValuesArray("param");
 
 
-        String domain = getRequest().getAttributes().get("domain").toString();
+        String domain = unescape(getAttribute("domain"));
 
-        String mbean = unescape(new EncoderBean().decode(getRequest().getAttributes().get("mbean").toString()));
+        String mbean = unescape(getAttribute("mbean"));
 
-        String declaration = new EncoderBean().decode(getRequest().getAttributes().get("operation").toString());
+        String declaration = getAttribute("operation");
 
         String operation = declaration.split("\\(")[0];
 
@@ -126,7 +116,7 @@ public class OperationResource extends AbstractTemplateResource
                 	}
                 	queryString+="ok=1";
             	}
-                getResponse().redirectPermanent(new EncoderBean().encode(declaration)+queryString);
+                getResponse().redirectPermanent(encoder.encode(declaration)+queryString);
             }
         }
         catch (InstanceNotFoundException e)
