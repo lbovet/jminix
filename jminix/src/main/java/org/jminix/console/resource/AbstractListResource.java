@@ -17,27 +17,19 @@
 
 package org.jminix.console.resource;
 
-import org.restlet.Context;
-import org.restlet.data.Request;
-import org.restlet.data.Response;
-
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 public abstract class AbstractListResource extends AbstractTemplateResource
 {
-    public AbstractListResource(Context context, Request request, Response response)
-    {
-        super(context, request, response);
-    }
-    
+
     protected String getTemplateName() {
         return "list";
     }
     
     @Override
-    protected final Map<String, Object> getModel()
+    public final Map<String, Object> getModel()
     {
         HashMap<String,Object> result = new HashMap<String,Object>();
 
@@ -46,6 +38,6 @@ public abstract class AbstractListResource extends AbstractTemplateResource
         return result;
     }
 
-    protected abstract List<? extends Object> getList();
+    protected abstract List<?> getList();
     
 }

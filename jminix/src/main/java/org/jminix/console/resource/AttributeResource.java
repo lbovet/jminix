@@ -20,11 +20,9 @@ package org.jminix.console.resource;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.jminix.type.AttributeFilter;
-import org.restlet.Context;
 import org.restlet.data.Form;
-import org.restlet.data.Request;
-import org.restlet.data.Response;
-import org.restlet.resource.Representation;
+import org.restlet.representation.Representation;
+import org.restlet.resource.Post;
 import org.restlet.resource.ResourceException;
 
 import javax.management.*;
@@ -40,23 +38,23 @@ public class AttributeResource extends AbstractTemplateResource
     
 	private static Log log = LogFactory.getLog(AttributeResource.class); 
 	private AttributeFilter attributeFilter;
-	
-    public AttributeResource(Context context, Request request, Response response)
-    {
-        super(context, request, response);
-        attributeFilter = (AttributeFilter)context.getAttributes().get("attributeFilter");
+
+    @Override
+    protected void doInit() throws ResourceException {
+        super.doInit();
+        attributeFilter = (AttributeFilter)getContext().getAttributes().get("attributeFilter");
     }
 
     private String templateName = "attribute";
     
     @Override
-    protected Map<String, Object> getModel()
+    public Map<String, Object> getModel()
     {
-        String domain = unescape(getAttribute("domain"));
+        String domain = unescape(getDecodedAttribute("domain"));
 
-        String mbean = unescape(getAttribute("mbean"));
+        String mbean = unescape(getDecodedAttribute("mbean"));
 
-        String attribute = getAttribute("attribute");
+        String attribute = getDecodedAttribute("attribute");
 
         Map<String, Object> model = new HashMap<String, Object>();
 
@@ -85,6 +83,9 @@ public class AttributeResource extends AbstractTemplateResource
                         Set<String> keys = data[i].getCompositeType().keySet();
                         StringBuilder sb = new StringBuilder("{");
                         for(String key: keys) {
+                            if (sb.length() > 1) {
+                                sb.append(", ");
+                            }
                             sb.append(key);
                             sb.append(": ");
                             sb.append(data[i].get(key));
@@ -149,16 +150,16 @@ public class AttributeResource extends AbstractTemplateResource
         }
     }
 
-    @Override
-    public void acceptRepresentation(Representation entity) throws ResourceException
+    @Post("*:txt|html|json")
+    public void update(Representation entity) throws ResourceException
     {
         String value = new Form(entity).getFirstValue("value");
 
-        String domain = unescape(getAttribute("domain"));
+        String domain = unescape(getDecodedAttribute("domain"));
         
-        String mbean = unescape(getAttribute("mbean"));
+        String mbean = unescape(getDecodedAttribute("mbean"));
                
-        String attributeName = getAttribute("attribute");
+        String attributeName = getDecodedAttribute("attribute");
         
         MBeanServerConnection server = getServer();
         
@@ -186,7 +187,7 @@ public class AttributeResource extends AbstractTemplateResource
                 }
                 queryString+="ok=1";
             }
-            getResponse().redirectPermanent(encoder.encode(attributeName)+queryString);
+            redirectPermanent(encoder.encode(attributeName) + queryString);
         }
         catch (InstanceNotFoundException e)
         {
@@ -220,15 +221,8 @@ public class AttributeResource extends AbstractTemplateResource
         {
             throw new RuntimeException(e);
         }
-                
     }
     
-    @Override
-    public boolean allowPost()
-    {
-        return true;
-    }
-
     @Override
     protected String getTemplateName()
     {

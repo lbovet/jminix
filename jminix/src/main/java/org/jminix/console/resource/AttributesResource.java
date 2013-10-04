@@ -17,21 +17,12 @@
 
 package org.jminix.console.resource;
 
-import org.restlet.Context;
-import org.restlet.data.Request;
-import org.restlet.data.Response;
-
 import javax.management.*;
 import java.io.IOException;
 import java.util.*;
 
 public class AttributesResource extends AbstractListResource
 {
-   
-    public AttributesResource(Context context, Request request, Response response)
-    {
-        super(context, request, response);
-    }
 
     @Override
     protected String getTemplateName()
@@ -39,14 +30,12 @@ public class AttributesResource extends AbstractListResource
         return "attributes";
     }
 
-
-
     @Override
-    protected List<? extends Object> getList()
+    protected List<MBeanAttributeInfo> getList()
     {
-        String domain = unescape(getAttribute("domain"));
+        String domain = unescape(getDecodedAttribute("domain"));
         
-        String mbean = unescape(getAttribute("mbean"));
+        String mbean = unescape(getDecodedAttribute("mbean"));
         
         try
         {

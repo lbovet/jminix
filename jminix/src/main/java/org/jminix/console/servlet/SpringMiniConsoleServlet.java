@@ -17,17 +17,16 @@
 
 package org.jminix.console.servlet;
 
-import javax.servlet.ServletException;
-
 import org.jminix.console.application.MiniConsoleApplication;
 import org.restlet.Application;
 import org.restlet.Context;
 import org.restlet.data.Protocol;
+import org.restlet.engine.util.ChildContext;
+import org.restlet.ext.servlet.ServerServlet;
 import org.springframework.context.ApplicationContext;
 import org.springframework.web.context.support.WebApplicationContextUtils;
 
-import com.noelios.restlet.ext.servlet.ServerServlet;
-import com.noelios.restlet.ext.servlet.ServletContextAdapter;
+import javax.servlet.ServletException;
 
 /**
  * MiniConsole servlet getting the MiniConsoleApplication from the Spring
@@ -51,7 +50,7 @@ public class SpringMiniConsoleServlet extends ServerServlet
     @Override
     protected Application createApplication(Context parentContext)
     {
-        app.setContext(new ServletContextAdapter(this,parentContext));
+        app.setContext(new ChildContext(parentContext));
         return app;
     }
     

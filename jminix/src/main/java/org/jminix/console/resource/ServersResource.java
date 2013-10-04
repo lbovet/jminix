@@ -17,24 +17,15 @@
 
 package org.jminix.console.resource;
 
-import java.util.ArrayList;
 import java.util.List;
-
-import org.restlet.Context;
-import org.restlet.data.Request;
-import org.restlet.data.Response;
 
 public class ServersResource extends AbstractListResource
 {
-    public ServersResource(Context context, Request request, Response response)
-    {
-        super(context, request, response);
-    }
 
     @Override
-    protected List<Object> getList()
+    protected List<String> getList()
     {
-        return new ArrayList<Object>(getServerProvider().getConnectionKeys());
+        return getServerProvider().getConnectionKeys();
     }
 
 }

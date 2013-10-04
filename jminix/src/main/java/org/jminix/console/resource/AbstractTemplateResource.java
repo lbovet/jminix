@@ -22,31 +22,35 @@ import org.apache.velocity.Template;
 import org.apache.velocity.app.VelocityEngine;
 import org.jminix.server.ServerConnectionProvider;
 import org.jminix.type.HtmlContent;
-import org.restlet.Context;
-import org.restlet.data.*;
+import org.restlet.data.CacheDirective;
+import org.restlet.data.CharacterSet;
+import org.restlet.data.Language;
+import org.restlet.data.MediaType;
 import org.restlet.ext.velocity.TemplateRepresentation;
-import org.restlet.resource.*;
+import org.restlet.representation.EmptyRepresentation;
+import org.restlet.representation.Representation;
+import org.restlet.representation.StringRepresentation;
+import org.restlet.representation.Variant;
+import org.restlet.resource.Get;
+import org.restlet.resource.ResourceException;
+import org.restlet.resource.ServerResource;
 
 import javax.management.MBeanAttributeInfo;
 import javax.management.MBeanServerConnection;
 import java.util.*;
 
-public abstract class AbstractTemplateResource extends Resource
+public abstract class AbstractTemplateResource extends ServerResource
 {
 	public String a;
 	
     private final static String VELOCITY_ENGINE_CONTEX_KEY = "template.resource.velocity.engine";
     protected final EncoderBean encoder = new EncoderBean();
 
-    public AbstractTemplateResource(Context context, Request request, Response response)
-    {
-        super(context, request, response);
-        getVariants().add(new Variant(MediaType.TEXT_HTML));
-        getVariants().add(new Variant(MediaType.TEXT_PLAIN));
-        getVariants().add(new Variant(MediaType.APPLICATION_JSON));
-
+    @Override
+    protected void doInit() throws ResourceException {
+        super.doInit();
         VelocityEngine ve =
-                (VelocityEngine) context.getAttributes().get(VELOCITY_ENGINE_CONTEX_KEY);
+                (VelocityEngine) getContext().getAttributes().get(VELOCITY_ENGINE_CONTEX_KEY);
 
         if (ve == null)
         {
@@ -68,38 +72,36 @@ public abstract class AbstractTemplateResource extends Resource
             {
                 throw new RuntimeException(e);
             }
-            
-            context.getAttributes().put(VELOCITY_ENGINE_CONTEX_KEY, ve);
+
+            getContext().getAttributes().put(VELOCITY_ENGINE_CONTEX_KEY, ve);
         }
     }
 
     protected abstract String getTemplateName();
 
-    protected abstract Map<String, Object> getModel();
+    @Get("html|txt|json")
+    public abstract Map<String, Object> getModel();
 
     @Override
-    public Representation represent(Variant variant) throws ResourceException
+    public Representation toRepresentation(Object source, Variant variant)
     {
-
-        // To avoid IE caching causing conflicts between JSON and HTML representations in ajax
-        // console
-        Form responseHeaders =
-                (Form) getResponse().getAttributes().get("org.restlet.http.headers");
-        if (responseHeaders == null)
-        {
-            responseHeaders = new Form();
-            getResponse().getAttributes().put("org.restlet.http.headers", responseHeaders);
+        if (source instanceof Representation) {
+            return (Representation) source;
         }
+        if (source == null) {
+            return new EmptyRepresentation();
+        }
+        Map<String, Object> model = (Map<String, Object>) source;
 
-        responseHeaders.add("Cache-Control", "no-store, no-cache, must-revalidate");
-        responseHeaders.add("Cache-Control", "post-check=0, pre-check=0");
-        responseHeaders.add("Pragma", "no-cache");
-        responseHeaders.add("Expires", "0");
+        getResponseCacheDirectives().add(CacheDirective.noCache());
+        getResponseCacheDirectives().add(CacheDirective.mustRevalidate());
+        getResponseCacheDirectives().add(CacheDirective.noStore());
+        Representation representation;
 
         if (MediaType.TEXT_HTML.equals(variant.getMediaType()))
         {
 
-            Map<String, Object> enrichedModel = new HashMap<String, Object>(getModel());
+            Map<String, Object> enrichedModel = new HashMap<String, Object>(model);
 
             String templateName = getTemplateName();
             if(enrichedModel.get("value") instanceof HtmlContent) {
@@ -137,27 +139,20 @@ public abstract class AbstractTemplateResource extends Resource
             enrichedModel.put("encoder", new EncoderBean());
             enrichedModel.put("request", getRequest());
 
-            return new TemplateRepresentation(template, enrichedModel, MediaType.TEXT_HTML);
+            representation = new TemplateRepresentation(template, enrichedModel, MediaType.TEXT_HTML);
 
         }
         else if (MediaType.TEXT_PLAIN.equals(variant.getMediaType()))
         {
 
-            Map<String, Object> enrichedModel = new HashMap<String, Object>(getModel());
+            Map<String, Object> enrichedModel = new HashMap<String, Object>(model);
 
             Template template;
             try
             {
-                VelocityEngine ve = new VelocityEngine();
-
-                Properties p = new Properties();
-                p.setProperty("resource.loader", "class");
-                p.setProperty("class.resource.loader.description",
-                        "Velocity Classpath Resource Loader");
-                p.setProperty("class.resource.loader.class",
-                        "org.apache.velocity.runtime.resource.loader.ClasspathResourceLoader");
-
-                ve.init(p);
+                VelocityEngine ve =
+                        (VelocityEngine) getContext().getAttributes().get(
+                                VELOCITY_ENGINE_CONTEX_KEY);
 
                 template =
                         ve.getTemplate("jminix/templates/"
@@ -172,7 +167,7 @@ public abstract class AbstractTemplateResource extends Resource
             enrichedModel.put("encoder", encoder);
             enrichedModel.put("request", getRequest());
 
-            return new TemplateRepresentation(template, enrichedModel, MediaType.TEXT_PLAIN);
+            representation = new TemplateRepresentation(template, enrichedModel, MediaType.TEXT_PLAIN);
 
         }
         else if (MediaType.APPLICATION_JSON.equals(variant.getMediaType()))
@@ -188,9 +183,9 @@ public abstract class AbstractTemplateResource extends Resource
                                     getRequest().getOriginalRef().getSegments().size() - 3) : null;
             boolean leaf = "attributes".equals(beforeLast) || "operations".equals(beforeLast);
 
-            if (getModel().containsKey("items") && !leaf)
+            if (model.containsKey("items") && !leaf)
             {
-                Object items = getModel().get("items");
+                Object items = model.get("items");
 
                 Collection<Object> itemCollection = null;
                 if (items instanceof Collection)
@@ -225,17 +220,17 @@ public abstract class AbstractTemplateResource extends Resource
             }
             else
             {
-                if (getModel().containsKey("value"))
+                if (model.containsKey("value"))
                 {
-                	if(getModel().get("value") instanceof HtmlContent) {
+                	if(model.get("value") instanceof HtmlContent) {
                 		result.put("value", "...");
                 	} else {
-                		result.put("value", getModel().get("value").toString());
+                		result.put("value", model.get("value").toString());
                 	}
                 }
-                else if (getModel().containsKey("items"))
+                else if (model.containsKey("items"))
                 {
-                	Object items = getModel().get("items");
+                	Object items = model.get("items");
                 	String value = null;
                 	if(items.getClass().isArray()) {
                 		value = Arrays.deepToString(Arrays.asList(items).toArray());
@@ -249,18 +244,20 @@ public abstract class AbstractTemplateResource extends Resource
             // Hack because root must be a list for dojo tree...
             if ("servers".equals(getRequest().getOriginalRef().getLastSegment(true)))
             {
-                return new StringRepresentation(JSONSerializer.toJSON(new Object[]{result})
+                representation = new StringRepresentation(JSONSerializer.toJSON(new Object[]{result})
                         .toString(), MediaType.APPLICATION_JSON, Language.ALL, CharacterSet.UTF_8);
             }
             else
             {
-                return new StringRepresentation(JSONSerializer.toJSON(result).toString(), MediaType.APPLICATION_JSON, Language.ALL, CharacterSet.UTF_8 );
+                representation = new StringRepresentation(JSONSerializer.toJSON(result).toString(), MediaType.APPLICATION_JSON, Language.ALL, CharacterSet.UTF_8 );
             }
         }
         else
         {
             return null;
         }
+        representation.setExpirationDate(new Date(0l));
+        return representation;
     }
 
     protected ServerConnectionProvider getServerProvider()
@@ -271,7 +268,7 @@ public abstract class AbstractTemplateResource extends Resource
     
     protected MBeanServerConnection getServer()
     {
-        return getServerProvider().getConnection(getAttribute("server"));
+        return getServerProvider().getConnection(getDecodedAttribute("server"));
     }
     
     protected String getQueryString() {
@@ -279,8 +276,8 @@ public abstract class AbstractTemplateResource extends Resource
     	return query!=null ? "?"+query : "";
     }
 
-    protected String getAttribute(String value) {
-        return encoder.decode(getRequest().getAttributes().get(value).toString());
+    protected String getDecodedAttribute(String value) {
+        return encoder.decode(getAttribute(value));
     }
 
     public String escape(String value) {

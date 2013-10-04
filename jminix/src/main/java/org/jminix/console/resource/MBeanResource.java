@@ -17,10 +17,6 @@
 
 package org.jminix.console.resource;
 
-import org.restlet.Context;
-import org.restlet.data.Request;
-import org.restlet.data.Response;
-
 import javax.management.*;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -28,20 +24,15 @@ import java.util.List;
 
 public class MBeanResource extends AbstractListResource
 {
-    
-    public MBeanResource(Context context, Request request, Response response)
-    {
-        super(context, request, response);
-    }
 
     @Override
     protected List<Object> getList()
     {
         List<Object> result = new ArrayList<Object>();
         
-        String domain = unescape(getAttribute("domain"));
+        String domain = unescape(getDecodedAttribute("domain"));
         
-        String mbean = unescape(getAttribute("mbean"));
+        String mbean = unescape(getDecodedAttribute("mbean"));
         
         MBeanServerConnection server = getServer();
             
