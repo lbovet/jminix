@@ -1,6 +1,6 @@
 
 #foreach( $attribute in $items)
-$attribute.name ($attribute.type) $attribute.description 
+$attribute.name ($attribute.type) $!{attribute.description}
 #if (! $attribute.writable )
 (ro)
 #end

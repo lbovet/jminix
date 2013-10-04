@@ -17,49 +17,35 @@
 
 package org.jminix.console.resource;
 
+import net.sf.json.JSONSerializer;
+import org.restlet.data.CharacterSet;
+import org.restlet.data.Form;
+import org.restlet.data.Language;
+import org.restlet.data.MediaType;
+import org.restlet.representation.Representation;
+import org.restlet.representation.StringRepresentation;
+import org.restlet.representation.Variant;
+import org.restlet.resource.Post;
+import org.restlet.resource.ResourceException;
+
+import javax.management.*;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
-import javax.management.InstanceNotFoundException;
-import javax.management.IntrospectionException;
-import javax.management.MBeanException;
-import javax.management.MBeanOperationInfo;
-import javax.management.MBeanParameterInfo;
-import javax.management.MBeanServerConnection;
-import javax.management.MalformedObjectNameException;
-import javax.management.ObjectName;
-import javax.management.ReflectionException;
-
-import net.sf.json.JSONSerializer;
-
-import org.restlet.Context;
-import org.restlet.data.Form;
-import org.restlet.data.MediaType;
-import org.restlet.data.Request;
-import org.restlet.data.Response;
-import org.restlet.resource.Representation;
-import org.restlet.resource.ResourceException;
-import org.restlet.resource.Variant;
-
 public class OperationResource extends AbstractTemplateResource
 {
-
-    public OperationResource(Context context, Request request, Response response)
-    {
-        super(context, request, response);
-    }
 
     private String templateName = "operation";
 
     @Override
-    protected Map<String, Object> getModel()
+    public Map<String, Object> getModel()
     {
-        String domain = getRequest().getAttributes().get("domain").toString();
+        String domain = unescape(getDecodedAttribute("domain"));
 
-        String mbean = unescape(new EncoderBean().decode(getRequest().getAttributes().get("mbean").toString()));
+        String mbean = unescape(getDecodedAttribute("mbean"));
 
-        String declaration = new EncoderBean().decode(getRequest().getAttributes().get("operation").toString());
+        String declaration = getDecodedAttribute("operation");
 
         String operation = declaration.split("\\(")[0];
 
@@ -74,17 +60,17 @@ public class OperationResource extends AbstractTemplateResource
         return model;
     }
 
-    @Override
-    public void acceptRepresentation(Representation entity) throws ResourceException
+    @Post("*:txt|html|json")
+    public Representation execute(Representation entity) throws ResourceException
     {
         String[] stringParams = new Form(entity).getValuesArray("param");
 
 
-        String domain = getRequest().getAttributes().get("domain").toString();
+        String domain = unescape(getDecodedAttribute("domain"));
 
-        String mbean = unescape(new EncoderBean().decode(getRequest().getAttributes().get("mbean").toString()));
+        String mbean = unescape(getDecodedAttribute("mbean"));
 
-        String declaration = new EncoderBean().decode(getRequest().getAttributes().get("operation").toString());
+        String declaration = getDecodedAttribute("operation");
 
         String operation = declaration.split("\\(")[0];
 
@@ -108,13 +94,13 @@ public class OperationResource extends AbstractTemplateResource
             Object result = server.invoke(new ObjectName(domain+":"+mbean), operation, params, signature);
 
             if(result != null) {
-            	Variant variant = getPreferredVariant();
+            	Variant variant = getPreferredVariant(getVariants());
             	if (MediaType.APPLICATION_JSON == variant.getMediaType()) {
-                    getResponse().setEntity(
-                            JSONSerializer.toJSON(result).toString(),
-                            MediaType.APPLICATION_JSON);
+                    return new StringRepresentation( JSONSerializer.toJSON(result).toString(),
+                            MediaType.APPLICATION_JSON, Language.ALL, CharacterSet.UTF_8);
             	} else {
-            		getResponse().setEntity(result.toString(), MediaType.TEXT_PLAIN);
+                    return new StringRepresentation( result.toString(),
+                            MediaType.TEXT_PLAIN, Language.ALL, CharacterSet.UTF_8);
             	}
             } else {
             	String queryString = getQueryString();
@@ -126,7 +112,8 @@ public class OperationResource extends AbstractTemplateResource
                 	}
                 	queryString+="ok=1";
             	}
-                getResponse().redirectPermanent(new EncoderBean().encode(declaration)+queryString);
+                redirectPermanent(encoder.encode(declaration)+queryString);
+                return null;
             }
         }
         catch (InstanceNotFoundException e)
@@ -149,13 +136,6 @@ public class OperationResource extends AbstractTemplateResource
         {
             throw new RuntimeException(e);
         }
-    }
-
-
-    @Override
-    public boolean allowPost()
-    {
-        return true;
     }
 
     @Override
