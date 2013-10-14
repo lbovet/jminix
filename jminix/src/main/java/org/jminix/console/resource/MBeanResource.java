@@ -17,37 +17,22 @@
 
 package org.jminix.console.resource;
 
+import javax.management.*;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.management.InstanceNotFoundException;
-import javax.management.IntrospectionException;
-import javax.management.MBeanServerConnection;
-import javax.management.MalformedObjectNameException;
-import javax.management.ObjectName;
-import javax.management.ReflectionException;
-
-import org.restlet.Context;
-import org.restlet.data.Request;
-import org.restlet.data.Response;
-
 public class MBeanResource extends AbstractListResource
 {
-    
-    public MBeanResource(Context context, Request request, Response response)
-    {
-        super(context, request, response);
-    }
 
     @Override
     protected List<Object> getList()
     {
         List<Object> result = new ArrayList<Object>();
         
-        String domain = getRequest().getAttributes().get("domain").toString();
+        String domain = unescape(getDecodedAttribute("domain"));
         
-        String mbean = unescape(new EncoderBean().decode(getRequest().getAttributes().get("mbean").toString()));
+        String mbean = unescape(getDecodedAttribute("mbean"));
         
         MBeanServerConnection server = getServer();
             

@@ -2,7 +2,7 @@
 #set( $name="$operation.name  - $encoder.decode($request.attributes.get('mbean'))")
 #parse("jminix/templates/header.vm")
 #if($desc!="off")
-$operation.description
+$!{operation.description}
 #end
 <br>
 <form method="POST">

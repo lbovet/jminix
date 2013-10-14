@@ -17,8 +17,6 @@
 
 package org.jminix.console.servlet;
 
-import javax.servlet.ServletException;
-
 import org.jminix.console.application.MiniConsoleApplication;
 import org.jminix.console.resource.ValueParser;
 import org.jminix.server.ServerConnectionProvider;
@@ -26,9 +24,10 @@ import org.jminix.type.AttributeFilter;
 import org.restlet.Application;
 import org.restlet.Context;
 import org.restlet.data.Protocol;
+import org.restlet.engine.util.ChildContext;
+import org.restlet.ext.servlet.ServerServlet;
 
-import com.noelios.restlet.ext.servlet.ServerServlet;
-import com.noelios.restlet.ext.servlet.ServletContextAdapter;
+import javax.servlet.ServletException;
 
 public class MiniConsoleServlet extends ServerServlet
 {
@@ -39,7 +38,7 @@ public class MiniConsoleServlet extends ServerServlet
     @Override
     protected Application createApplication(Context parentContext)
     {
-        app.setContext(new ServletContextAdapter(this,parentContext));
+        app.setContext(new ChildContext(parentContext));
         return app;
     }
 

@@ -4,7 +4,7 @@
 	<groupId>org.jminix</groupId>
 	<artifactId>jminix</artifactId>
 	<name>jminix</name>
-	<version>1.1.0</version>
+	<version>1.1.1-SNAPSHOT</version>
 	<description>A simple embeddable restful JMX console</description>
 	<packaging>jar</packaging>
 	<url>http://www.jminix.org</url>
@@ -46,30 +46,19 @@
  -->
 	<dependencies>
 		<dependency>
-			<groupId>org.restlet</groupId>
+			<groupId>org.restlet.jee</groupId>
 			<artifactId>org.restlet</artifactId>
 			<version>${restlet.version}</version>
 		</dependency>
 		<dependency>
-			<groupId>org.restlet</groupId>
+			<groupId>org.restlet.jee</groupId>
 			<artifactId>org.restlet.ext.velocity</artifactId>
 			<version>${restlet.version}</version>
 		</dependency>
 		<dependency>
-			<groupId>com.noelios.restlet</groupId>
-			<artifactId>com.noelios.restlet</artifactId>
+			<groupId>org.restlet.jee</groupId>
+			<artifactId>org.restlet.ext.servlet</artifactId>
 			<version>${restlet.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>com.noelios.restlet</groupId>
-			<artifactId>com.noelios.restlet.ext.servlet</artifactId>
-			<version>${restlet.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>com.noelios.restlet</groupId>
-			<artifactId>com.noelios.restlet.ext.simple</artifactId>
-			<version>${restlet.version}</version>
-			<scope>test</scope>
 		</dependency>
 		<dependency>
 			<groupId>commons-logging</groupId>
@@ -144,6 +133,18 @@
 					</archive>
 				</configuration>
 			</plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-source-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>attach-sources</id>
+                        <goals>
+                            <goal>jar</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
 			<plugin>
 				<artifactId>maven-javadoc-plugin</artifactId>
 				<dependencies>
@@ -167,7 +168,7 @@
 
 	<properties>
 		<spring.version>2.5.6</spring.version>
-		<restlet.version>1.1.5</restlet.version>
+		<restlet.version>2.1.4</restlet.version>
 		<jdk>1.5</jdk>
 	</properties>
 	

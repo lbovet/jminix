@@ -2,7 +2,7 @@
 #set( $name="$encoder.decode($request.attributes.get('attribute')) - $encoder.decode($request.attributes.get('mbean'))" )
 #parse("jminix/templates/header.vm")
 #if($desc!="off")
-$attribute.description
+$!{attribute.description}
 #end
 #if ($attribute.writable)
 <form method="POST"><input type="text" name="value" value="$value"/><input type="submit" value="update"/>

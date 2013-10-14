@@ -20,17 +20,8 @@ package org.jminix.console.resource;
 import java.util.Arrays;
 import java.util.List;
 
-import org.restlet.Context;
-import org.restlet.data.Request;
-import org.restlet.data.Response;
-
 public class DomainResource extends AbstractListResource
 {
-    
-    public DomainResource(Context context, Request request, Response response)
-    {
-        super(context, request, response);
-    }
 
     @Override
     protected List<Object> getList()
