@@ -50,13 +50,7 @@
     		background: url("js/undefined.gif") no-repeat scroll left top transparent;
 		}
     </style>
-
-    <!-- load the dojo toolkit base -->
-<!--    <script type="text/javascript" src="dojo.js" djConfig="blankGif:'blank.gif'"></script>
- -->
-    <script type="text/javascript" src="js/dojotoolkit/dojo/dojo.js"
-        djConfig="parseOnLoad:true,locale:'en'"></script>
-
+    <script type="text/javascript" src="js/dojotoolkit/dojo/dojo.js" djConfig="parseOnLoad:true,locale:'en'"></script>
     <script type="text/javascript"> 
     
     dojo.require("dijit.Tree");
@@ -97,7 +91,11 @@
 
 			// count how many items need to be loaded
 			var _waitCount = 0;
-			dojo.forEach(childItems, function(item){ if(!store.isItemLoaded(item)){ _waitCount++; } });
+			dojo.forEach(childItems, function(item){ 
+				if(!store.isItemLoaded(item)){ 
+					_waitCount++; 
+				} 
+			});
 
 			if(_waitCount == 0){
 				// all items are already loaded.  proceed...
@@ -112,6 +110,16 @@
 				}
 				dojo.forEach(childItems, function(item){
 					if(!store.isItemLoaded(item)){
+
+						if(!item.label){		
+							var tmp = item.$ref;
+							if(tmp.charAt(tmp.length - 1) == '/'){
+								item.label = tmp.substring(0, tmp.length - 1);	
+							}else{
+								item.label = tmp;
+							}
+						}
+
 						store.loadItem({
 							item: item,
 							onItem: onItem,
