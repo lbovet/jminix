@@ -20,44 +20,73 @@ package org.jminix.console.resource;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.Validate;
 
-public class ValueParser
-{
+public class ValueParser {
 	private static String stringArraySeparator = ";";
-	
-	public static void setStringArraySeparator(String separator) 
-	{
+
+	public static void setStringArraySeparator(String separator) {
 		Validate.notNull(separator);
 		stringArraySeparator = separator;
 	}
-	
-    public Object parse(String value, String type)
-    {
-        Object result=null;
-        
-        if( type.equals("java.lang.String") ) {
-            return value;
-        } else if( type.equals("java.lang.Byte") || type.equals("byte")) {
-            result = new Byte(value);
-        } else if( type.equals("java.lang.Short") || type.equals("short")) {
-            result = new Short(value);
-        } else if( type.equals("java.lang.Integer") || type.equals("int")) {
-            result = new Integer(value);
-        } else if( type.equals("java.lang.Long") || type.equals("long")) {
-            result = new Long(value);
-        } else if( type.equals("java.lang.Double") || type.equals("double")) {
-            result = new Double(value);      
-        } else if( type.equals("java.lang.Float") || type.equals("float")) {
-            result = new Float(value);               
-        } else if( type.equals("java.lang.Boolean") || type.equals("boolean")) {
-            result = new Boolean(value);
-        } else if( type.equals("[Ljava.lang.String;")) {
-        	result = StringUtils.splitPreserveAllTokens(value, stringArraySeparator);
-        }
-        
-        if(result==null) {
-            throw new RuntimeException("Type "+type+" is not supported");
-        }
-        
-        return result;
-    }
+
+	public static boolean isNullOrEmpty(String value) {
+		return null == value || "".equals(value);
+	}
+
+	public Object parse(String value, String type) {
+		Object result = null;
+
+		if (type.equals("java.lang.String")) {
+			return value;
+		} else if (type.equals("java.lang.Byte") || type.equals("byte")) {
+			if (isNullOrEmpty(value)) {
+				return "byte".equals(type) ? (byte) 0 : null;
+			}
+
+			result = new Byte(value);
+		} else if (type.equals("java.lang.Short") || type.equals("short")) {
+			if (isNullOrEmpty(value)) {
+				return "short".equals(type) ? (short) 0 : null;
+			}
+
+			result = new Short(value);
+		} else if (type.equals("java.lang.Integer") || type.equals("int")) {
+			if (isNullOrEmpty(value)) {
+				return "int".equals(type) ? (int) 0 : null;
+			}
+
+			result = new Integer(value);
+		} else if (type.equals("java.lang.Long") || type.equals("long")) {
+			if (isNullOrEmpty(value)) {
+				return "long".equals(type) ? (long) 0 : null;
+			}
+
+			result = new Long(value);
+		} else if (type.equals("java.lang.Double") || type.equals("double")) {
+			if (isNullOrEmpty(value)) {
+				return "double".equals(type) ? (double) 0 : null;
+			}
+
+			result = new Double(value);
+		} else if (type.equals("java.lang.Float") || type.equals("float")) {
+			if (isNullOrEmpty(value)) {
+				return "float".equals(type) ? (float) 0 : null;
+			}
+
+			result = new Float(value);
+		} else if (type.equals("java.lang.Boolean") || type.equals("boolean")) {
+			if (isNullOrEmpty(value)) {
+				return "boolean".equals(type) ? false : null;
+			}
+
+			result = new Boolean(value);
+		} else if (type.equals("[Ljava.lang.String;")) {
+			result = StringUtils.splitPreserveAllTokens(value, stringArraySeparator);
+		}
+
+		if (result == null) {
+			throw new RuntimeException("Type " + type + " is not supported");
+		}
+
+		return result;
+	}
 }
