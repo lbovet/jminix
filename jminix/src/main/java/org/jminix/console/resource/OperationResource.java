@@ -18,6 +18,8 @@
 package org.jminix.console.resource;
 
 import net.sf.json.JSONSerializer;
+
+import org.jminix.type.HtmlContent;
 import org.restlet.data.CharacterSet;
 import org.restlet.data.Form;
 import org.restlet.data.Language;
@@ -29,6 +31,7 @@ import org.restlet.resource.Post;
 import org.restlet.resource.ResourceException;
 
 import javax.management.*;
+
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
@@ -83,7 +86,6 @@ public class OperationResource extends AbstractTemplateResource
 
         try
         {
-
             Object[] params=new Object[signature.length];
 
             ValueParser parser = new ValueParser();
@@ -100,7 +102,8 @@ public class OperationResource extends AbstractTemplateResource
                             MediaType.APPLICATION_JSON, Language.ALL, CharacterSet.UTF_8);
             	} else {
                     return new StringRepresentation( result.toString(),
-                            MediaType.TEXT_PLAIN, Language.ALL, CharacterSet.UTF_8);
+                            result instanceof HtmlContent ? MediaType.TEXT_HTML : MediaType.TEXT_PLAIN, 
+                            Language.ALL, CharacterSet.UTF_8);
             	}
             } else {
             	String queryString = getQueryString();
@@ -143,7 +146,7 @@ public class OperationResource extends AbstractTemplateResource
     {
         return templateName;
     }
-
+    
     private MBeanOperationInfo getOperation(MBeanServerConnection server, String domain, String mbean,
                                             String operationName, String signature)
     {
