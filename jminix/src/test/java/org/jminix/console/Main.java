@@ -17,11 +17,26 @@
 
 package org.jminix.console;
 
+import java.lang.management.ManagementFactory;
+
+import javax.management.InstanceAlreadyExistsException;
+import javax.management.MBeanRegistrationException;
+import javax.management.MBeanServer;
+import javax.management.MalformedObjectNameException;
+import javax.management.NotCompliantMBeanException;
+import javax.management.ObjectName;
+
 import org.jminix.console.tool.StandaloneMiniConsole;
 
 public class Main
 {
-    public final static void main(String[] args) {
+    public final static void main(String[] args) throws MalformedObjectNameException, 
+    InstanceAlreadyExistsException, MBeanRegistrationException, NotCompliantMBeanException {
+
+        MBeanServer mbs = ManagementFactory.getPlatformMBeanServer();
+        ObjectName name = new ObjectName("org.jminix.console:type=JMiniXStuff");
+        mbs.registerMBean(new JMiniXStuff(), name);
+
         new StandaloneMiniConsole(8088);
     }
 }

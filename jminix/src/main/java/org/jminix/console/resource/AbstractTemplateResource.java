@@ -17,17 +17,32 @@
 
 package org.jminix.console.resource;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Properties;
+
+import javax.management.MBeanAttributeInfo;
+import javax.management.MBeanServerConnection;
+
 import net.sf.json.JSONSerializer;
+
 import org.apache.velocity.Template;
 import org.apache.velocity.app.VelocityEngine;
 import org.jminix.server.ServerConnectionProvider;
 import org.jminix.type.HtmlContent;
+import org.jminix.type.InputStreamContent;
 import org.restlet.data.CacheDirective;
 import org.restlet.data.CharacterSet;
 import org.restlet.data.Language;
 import org.restlet.data.MediaType;
 import org.restlet.ext.velocity.TemplateRepresentation;
 import org.restlet.representation.EmptyRepresentation;
+import org.restlet.representation.InputRepresentation;
 import org.restlet.representation.Representation;
 import org.restlet.representation.StringRepresentation;
 import org.restlet.representation.Variant;
@@ -35,14 +50,10 @@ import org.restlet.resource.Get;
 import org.restlet.resource.ResourceException;
 import org.restlet.resource.ServerResource;
 
-import javax.management.MBeanAttributeInfo;
-import javax.management.MBeanServerConnection;
-import java.util.*;
-
 public abstract class AbstractTemplateResource extends ServerResource
 {
-	public String a;
-	
+    public String a;
+
     private final static String VELOCITY_ENGINE_CONTEX_KEY = "template.resource.velocity.engine";
     protected final EncoderBean encoder = new EncoderBean();
 
@@ -100,11 +111,16 @@ public abstract class AbstractTemplateResource extends ServerResource
 
         if (MediaType.TEXT_HTML.equals(variant.getMediaType()))
         {
-
             Map<String, Object> enrichedModel = new HashMap<String, Object>(model);
 
             String templateName = getTemplateName();
-            if(enrichedModel.get("value") instanceof HtmlContent) {
+            Object resultObject = enrichedModel.get("value");
+            
+            if (resultObject instanceof InputStreamContent) {
+                return new InputRepresentation((InputStreamContent) resultObject, MediaType.APPLICATION_OCTET_STREAM);
+            }
+
+            if (resultObject instanceof HtmlContent) {
             	templateName = "html-attribute";
             }
             
@@ -125,11 +141,11 @@ public abstract class AbstractTemplateResource extends ServerResource
             
             String skin = getRequest().getResourceRef().getQueryAsForm().getValues("skin");                       
             if(skin==null) {
-            	skin="default";
+                skin="default";
             }
             String desc = getRequest().getResourceRef().getQueryAsForm().getValues("desc");  
             if(desc==null) {
-            	desc="on";
+                desc="on";
             }
             enrichedModel.put("query", getQueryString());
             enrichedModel.put("ok", "1".equals(getRequest().getResourceRef().getQueryAsForm().getValues("ok")));
@@ -222,21 +238,21 @@ public abstract class AbstractTemplateResource extends ServerResource
             {
                 if (model.containsKey("value"))
                 {
-                	if(model.get("value") instanceof HtmlContent) {
-                		result.put("value", "...");
-                	} else {
-                		result.put("value", model.get("value").toString());
-                	}
+                    if(model.get("value") instanceof HtmlContent) {
+                        result.put("value", "...");
+                    } else {
+                        result.put("value", model.get("value").toString());
+                    }
                 }
                 else if (model.containsKey("items"))
                 {
-                	Object items = model.get("items");
-                	String value = null;
-                	if(items.getClass().isArray()) {
-                		value = Arrays.deepToString(Arrays.asList(items).toArray());
-                	} else {
-                		value = items.toString();
-                	}
+                    Object items = model.get("items");
+                    String value = null;
+                    if(items.getClass().isArray()) {
+                        value = Arrays.deepToString(Arrays.asList(items).toArray());
+                    } else {
+                        value = items.toString();
+                    }
                     result.put("value", value);
                 }
             }
@@ -272,8 +288,8 @@ public abstract class AbstractTemplateResource extends ServerResource
     }
     
     protected String getQueryString() {
-    	String query = getRequest().getResourceRef().getQuery();
-    	return query!=null ? "?"+query : "";
+        String query = getRequest().getResourceRef().getQuery();
+        return query!=null ? "?"+query : "";
     }
 
     protected String getDecodedAttribute(String value) {

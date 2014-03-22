@@ -17,21 +17,34 @@
 
 package org.jminix.console.resource;
 
+import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
+
+import javax.management.InstanceNotFoundException;
+import javax.management.IntrospectionException;
+import javax.management.MBeanException;
+import javax.management.MBeanOperationInfo;
+import javax.management.MBeanParameterInfo;
+import javax.management.MBeanServerConnection;
+import javax.management.MalformedObjectNameException;
+import javax.management.ObjectName;
+import javax.management.ReflectionException;
+
 import net.sf.json.JSONSerializer;
+
+import org.jminix.type.HtmlContent;
+import org.jminix.type.InputStreamContent;
 import org.restlet.data.CharacterSet;
 import org.restlet.data.Form;
 import org.restlet.data.Language;
 import org.restlet.data.MediaType;
+import org.restlet.representation.InputRepresentation;
 import org.restlet.representation.Representation;
 import org.restlet.representation.StringRepresentation;
 import org.restlet.representation.Variant;
 import org.restlet.resource.Post;
 import org.restlet.resource.ResourceException;
-
-import javax.management.*;
-import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
 
 public class OperationResource extends AbstractTemplateResource
 {
@@ -83,7 +96,6 @@ public class OperationResource extends AbstractTemplateResource
 
         try
         {
-
             Object[] params=new Object[signature.length];
 
             ValueParser parser = new ValueParser();
@@ -94,24 +106,29 @@ public class OperationResource extends AbstractTemplateResource
             Object result = server.invoke(new ObjectName(domain+":"+mbean), operation, params, signature);
 
             if(result != null) {
-            	Variant variant = getPreferredVariant(getVariants());
-            	if (MediaType.APPLICATION_JSON == variant.getMediaType()) {
+                Variant variant = getPreferredVariant(getVariants());
+                if (MediaType.APPLICATION_JSON == variant.getMediaType()) {
                     return new StringRepresentation( JSONSerializer.toJSON(result).toString(),
                             MediaType.APPLICATION_JSON, Language.ALL, CharacterSet.UTF_8);
-            	} else {
-                    return new StringRepresentation( result.toString(),
-                            MediaType.TEXT_PLAIN, Language.ALL, CharacterSet.UTF_8);
-            	}
+                } else {
+                    if (result instanceof InputStreamContent) {
+                        return new InputRepresentation((InputStreamContent) result, MediaType.APPLICATION_OCTET_STREAM);
+                    } else {
+                        return new StringRepresentation(result.toString(),
+                                result instanceof HtmlContent ? MediaType.TEXT_HTML : MediaType.TEXT_PLAIN,
+                                Language.ALL, CharacterSet.UTF_8);
+                    }
+                }
             } else {
-            	String queryString = getQueryString();
-            	if(!queryString.contains("ok=1")) {
-                	if(queryString==null || "".equals(queryString)) {
-                		queryString = "?";
-                	} else {
-                		queryString += "&";
-                	}
-                	queryString+="ok=1";
-            	}
+                String queryString = getQueryString();
+                if(!queryString.contains("ok=1")) {
+                    if(queryString==null || "".equals(queryString)) {
+                        queryString = "?";
+                    } else {
+                        queryString += "&";
+                    }
+                    queryString+="ok=1";
+                }
                 redirectPermanent(encoder.encode(declaration)+queryString);
                 return null;
             }
@@ -143,7 +160,7 @@ public class OperationResource extends AbstractTemplateResource
     {
         return templateName;
     }
-
+    
     private MBeanOperationInfo getOperation(MBeanServerConnection server, String domain, String mbean,
                                             String operationName, String signature)
     {
