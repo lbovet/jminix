@@ -17,20 +17,7 @@
 
 package org.jminix.console.resource;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Properties;
-
-import javax.management.MBeanAttributeInfo;
-import javax.management.MBeanServerConnection;
-
 import net.sf.json.JSONSerializer;
-
 import org.apache.velocity.Template;
 import org.apache.velocity.app.VelocityEngine;
 import org.jminix.server.ServerConnectionProvider;
@@ -41,14 +28,15 @@ import org.restlet.data.CharacterSet;
 import org.restlet.data.Language;
 import org.restlet.data.MediaType;
 import org.restlet.ext.velocity.TemplateRepresentation;
-import org.restlet.representation.EmptyRepresentation;
-import org.restlet.representation.InputRepresentation;
-import org.restlet.representation.Representation;
-import org.restlet.representation.StringRepresentation;
-import org.restlet.representation.Variant;
+import org.restlet.representation.*;
 import org.restlet.resource.Get;
 import org.restlet.resource.ResourceException;
 import org.restlet.resource.ServerResource;
+
+import javax.management.MBeanAttributeInfo;
+import javax.management.MBeanServerConnection;
+import javax.management.openmbean.CompositeData;
+import java.util.*;
 
 public abstract class AbstractTemplateResource extends ServerResource
 {
@@ -255,6 +243,11 @@ public abstract class AbstractTemplateResource extends ServerResource
                     }
                     result.put("value", value);
                 }
+					 else if (model.containsKey("attributes") && model.get("attributes") instanceof CompositeData)
+					 {
+						 CompositeData items = (CompositeData) model.get("attributes");
+						 result.put("value", items.values());
+					 }
             }
 
             // Hack because root must be a list for dojo tree...

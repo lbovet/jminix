@@ -34,7 +34,7 @@
 			<timezone>+1</timezone>
 		</developer>
 	</developers>
-<!-- 
+
 	<repositories>
 		<repository>
 			<id>maven-restlet</id>
@@ -43,7 +43,7 @@
 			<url>http://maven.restlet.org</url>
 		</repository>
 	</repositories>
- -->
+
 	<dependencies>
 		<dependency>
 			<groupId>org.restlet.jee</groupId>
