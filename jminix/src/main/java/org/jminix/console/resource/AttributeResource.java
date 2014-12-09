@@ -72,6 +72,13 @@ public class AttributeResource extends AbstractTemplateResource
             Object value = server.getAttribute(new ObjectName(domain+":"+mbean), attribute);
 
             model.put("attribute", info);
+
+				if((value instanceof CompositeData) && getAttribute("item")!=null) {
+					String item = getDecodedAttribute("item");
+					log.debug("Reading key " + item + " from " + value);
+				   value = ((CompositeData) value).get(item);
+				}
+
             if(value==null) {
                 model.put("value", "<null>");
             } else if(value.getClass().isArray()) {

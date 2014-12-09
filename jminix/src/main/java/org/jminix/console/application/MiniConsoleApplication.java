@@ -71,6 +71,7 @@ public class MiniConsoleApplication extends Application
         router.attach("/servers/{server}/domains/{domain}/mbeans/{mbean}", MBeanResource.class);
         router.attach("/servers/{server}/domains/{domain}/mbeans/{mbean}/attributes", AttributesResource.class);
         router.attach("/servers/{server}/domains/{domain}/mbeans/{mbean}/attributes/{attribute}", AttributeResource.class);
+        router.attach("/servers/{server}/domains/{domain}/mbeans/{mbean}/attributes/{attribute}/{item}", AttributeResource.class);
         router.attach("/servers/{server}/domains/{domain}/mbeans/{mbean}/operations", OperationsResource.class);
         router.attach("/servers/{server}/domains/{domain}/mbeans/{mbean}/operations/{operation}", OperationResource.class);        
         
