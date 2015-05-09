@@ -132,7 +132,8 @@
 		}
 
         var tree = new dijit.Tree({
-            model: model,  
+            model: model,
+            persist: false,
                 onClick: function(item,node){
                 	grid.startup();
             		if(item.__id=="servers/servers/#0") {
