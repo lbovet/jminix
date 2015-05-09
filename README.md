@@ -2,7 +2,7 @@
 
 Main documentation under https://code.google.com/p/jminix/
 
-## Getting started
+## Standalone Mode
 
 ### Build 
 
