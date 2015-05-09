@@ -34,7 +34,9 @@ public class RmiServerConnectionProvider extends AbstractMapServerConnectionProv
 	private String username;
 	
 	private String password;
-	
+
+    private Map<String, JMXConnector> jmxcs = new HashMap<String, JMXConnector>();
+
 	/**
 	 * Not explicitly documented.
 	 * @see org.jminix.server.ServerConnectionProvider#getConnectionKeys()
@@ -49,21 +51,27 @@ public class RmiServerConnectionProvider extends AbstractMapServerConnectionProv
 	 * @see org.jminix.server.ServerConnectionProvider#getConnection(java.lang.String)
 	 */
 	public MBeanServerConnection getConnection(String name) {
-		
+
 		JMXServiceURL url;
 		try {
 			url = new JMXServiceURL(serviceUrl);
 
-			JMXConnector jmxc;
-			if(username != null && password != null) {
-				String[] creds = {username, password};
-				Map<String,Object> env = new HashMap<String,Object>();
-				env.put(JMXConnector.CREDENTIALS, creds);
-				jmxc = JMXConnectorFactory.connect(url, env);
-			} else {			
-				jmxc = JMXConnectorFactory.connect(url, null);
+			JMXConnector jmxc = jmxcs.get(serviceUrl);
+
+			if(jmxc == null) {
+				if (username != null && password != null) {
+					String[] creds = {username, password};
+					Map<String, Object> env = new HashMap<String, Object>();
+					env.put(JMXConnector.CREDENTIALS, creds);
+					jmxc = JMXConnectorFactory.connect(url, env);
+				} else {
+					jmxc = JMXConnectorFactory.connect(url, null);
+				}
+				jmxcs.put(serviceUrl, jmxc);
+			} else {
+				jmxc.connect();
 			}
-            return jmxc.getMBeanServerConnection();
+			return jmxc.getMBeanServerConnection();
 		} catch (MalformedURLException e) {
 			throw new RuntimeException(e);
 		} catch (IOException e) {
