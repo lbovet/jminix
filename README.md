@@ -1,48 +1,38 @@
-# jminix 
+<p align='center'><img src='http://jminix.googlecode.com/svn/wiki/images/jminix-logo.png' /></p>
 
-Main documentation under https://code.google.com/p/jminix/
+<p align='center'><b><a href='Documentation.md'>Documentation</a></b> | <b><a href='Screenshots.md'>Screenshots</a></b> | <b><a href='ReleaseNotes.md'>Release Notes</a></b> | <b><a href='http://groups.google.com/group/jminix-users'>Support</a></b> | <b><a href='Contribute.md'>Contribute</a></b></p>
 
-## Standalone Mode
+Don't want to use an external full-blown JMX console? Just want to have a **simple JMX entry point** into your new or existing apps?
 
-### Build 
-
-The project is build with maven. Use it as a dependency to embed jminix into your application or execute the jar file for standalone usage.
-
-### Flexable usage
-
-This project provides HTTP based access to JMX MBeans and is embeddable to java (spring) applications. Also, there is a servlet for web servlet containers. 
-
-Addionally, the projects executable jar file can be started to monitor a remote JMX application: 
-
-Start your java application to monitor and enable remote monitoring:
+Embedding JMiniX in a webapp is done **simply by declaring a servlet**. Deployed as a servlet, it benefits from your web application configuration such as filters or security constraints.
 
 ```
--Dcom.sun.management.jmxremote 
--Dcom.sun.management.jmxremote.port=9010
--Dcom.sun.management.jmxremote.local.only=false 
--Dcom.sun.management.jmxremote.authenticate=false 
--Dcom.sun.management.jmxremote.ssl=false
+<servlet>
+    <servlet-name>JmxMiniConsoleServlet</servlet-name>
+    <servlet-class>org.jminix.console.servlet.MiniConsoleServlet</servlet-class>
+</servlet> 
 ```
 
-From localhost, you can now use jminix in standalone mode adding the following vm params at startup: 
+JMiniX can also be embedded in a **non-web application**, thanks to a lightweight internal webserver:
 
 ```
--DserverConnectionProvider=org.jminix.server.RmiServerConnectionProvider
--DserverConnectionProviderArgs=ServiceUrl=service:jmx:rmi:///jndi/rmi://localhost:9010/jmxrmi
+new StandaloneMiniConsole(8088);
 ```
 
-There is also a possibility to add authentification parameters:
+The console is built in a **RESTful way**. Domains, MBeans, attributes, properties are resources and can be refered to directly with an URL as HTML or JSON (according to Accept header). For example:
 
-```
--DserverConnectionProvider=org.jminix.server.RmiServerConnectionProvider
--DserverConnectionProviderArgs=ServiceUrl=service:jmx:rmi:///jndi/rmi://localhost:9010/jmxrmi,Username=user,Password=secret
-```
+ht<b />tp://localhost:8088/servers/0/domains/java.lang/mbeans/type=Memory/attributes/HeapMemoryUsage
 
-jminix starts on port 8181. This can be adjusted adding a normal command line parameter:
+Or using the pretty ajax browser:
 
-```
-java -D...VMPARAMS -jar jminix-VERSION.jar 1234 
-```
+<a href='http://code.google.com/p/jminix/wiki/Screenshots'><img src='http://jminix.googlecode.com/svn/wiki/screenshots/snap011.png' border='0' /></a>
 
-would start the application in standalone mode on port 1234.
 
+---
+
+
+Proudly provided by<br />
+<a href='http://www.post.ch'>
+<img src='http://www.post.ch/en/post-logo.gif' border='0' height='31' /></a>
+
+<p align='right'><img src='http://jminix.googlecode.com/svn/wiki/images/jminix-cricket.png' /></p>
