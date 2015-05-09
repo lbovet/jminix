@@ -1,6 +1,6 @@
-<p align='center'><img src='http://jminix.googlecode.com/svn/wiki/images/jminix-logo.png' /></p>
+<p align='center'><img src='https://raw.githubusercontent.com/wiki/lbovet/jminix/images/jminix-logo.png' /></p>
 
-<p align='center'><b><a href='Documentation.md'>Documentation</a></b> | <b><a href='Screenshots.md'>Screenshots</a></b> | <b><a href='ReleaseNotes.md'>Release Notes</a></b> | <b><a href='http://groups.google.com/group/jminix-users'>Support</a></b> | <b><a href='Contribute.md'>Contribute</a></b></p>
+<p align='center'><b><a href='https://github.com/lbovet/jminix/wiki'>Documentation</a></b> | <b><a href='https://github.com/lbovet/jminix/wiki/Screenshots'>Screenshots</a></b> | <b><a href='https://github.com/lbovet/jminix/wiki/ReleaseNotes'>Release Notes</a></b> | <b><a href='http://groups.google.com/group/jminix-users'>Support</a></b> | <b><a href='https://github.com/lbovet/jminix/wiki/Contribute'>Contribute</a></b></p>
 
 Don't want to use an external full-blown JMX console? Just want to have a **simple JMX entry point** into your new or existing apps?
 
@@ -25,7 +25,7 @@ ht<b />tp://localhost:8088/servers/0/domains/java.lang/mbeans/type=Memory/attrib
 
 Or using the pretty ajax browser:
 
-<a href='http://code.google.com/p/jminix/wiki/Screenshots'><img src='http://jminix.googlecode.com/svn/wiki/screenshots/snap011.png' border='0' /></a>
+<a href='http://code.google.com/p/jminix/wiki/Screenshots'><img src='https://raw.githubusercontent.com/wiki/lbovet/jminix/images/snap011.png' border='0' /></a>
 
 
 ---
@@ -35,4 +35,4 @@ Proudly provided by<br />
 <a href='http://www.post.ch'>
 <img src='http://www.post.ch/en/post-logo.gif' border='0' height='31' /></a>
 
-<p align='right'><img src='http://jminix.googlecode.com/svn/wiki/images/jminix-cricket.png' /></p>
+<p align='right'><img src='https://raw.githubusercontent.com/wiki/lbovet/jminix/images/jminix-cricket.png' /></p>
