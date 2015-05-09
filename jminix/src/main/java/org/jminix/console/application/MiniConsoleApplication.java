@@ -32,17 +32,78 @@ import org.restlet.routing.Template;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 
 public class MiniConsoleApplication extends Application
-{    
+{
+  
     {
         configureLog(null);
     }
     
-    private ServerConnectionProvider serverConnectionProvider = new DefaultLocalServerConnectionProvider();
+    private ServerConnectionProvider serverConnectionProvider;
     
     private AttributeFilter attributeFilter;
 
+    public MiniConsoleApplication() 
+    {
+      initConnectionServiceProvider();
+    }
+
+    private void initConnectionServiceProvider() {
+      String serverConnectionProviderName = System.getProperty("serverConnectionProvider");
+      if(serverConnectionProviderName == null){
+        serverConnectionProvider = new DefaultLocalServerConnectionProvider();
+      } else {
+        initServerConnectionProvider(serverConnectionProviderName);
+        if(serverConnectionProvider == null){
+          serverConnectionProvider = new DefaultLocalServerConnectionProvider();
+        }
+      }
+    }
+
+    private void initServerConnectionProvider(String serverConnectionProviderName) {
+      try {
+        Class<? extends ServerConnectionProvider> forName = (Class<? extends ServerConnectionProvider>) Class.forName(serverConnectionProviderName);
+        serverConnectionProvider = forName.newInstance();
+        initStringProperties(forName);
+      } catch (InstantiationException e) {
+        e.printStackTrace();
+      } catch (IllegalAccessException e) {
+        e.printStackTrace();
+      } catch (ClassNotFoundException e) {
+        e.printStackTrace();
+      }
+    }
+
+    private void initStringProperties(Class<? extends ServerConnectionProvider> forName) throws IllegalAccessException {
+      String argsAsCommaSepString = System.getProperty("serverConnectionProviderArgs");
+      if(argsAsCommaSepString != null){
+        String[] args = argsAsCommaSepString.split(",");
+        for(String kvPair : args){
+          String[] kvArray = kvPair.split("=");
+          if(kvArray.length == 2){
+            try {
+              Method m = forName.getMethod("set" + kvArray[0], String.class);
+              m.invoke(serverConnectionProvider, kvArray[1]);
+            } catch (NoSuchMethodException e) {
+              e.printStackTrace();
+            } catch (SecurityException e) {
+              e.printStackTrace();
+            } catch (IllegalArgumentException e) {
+              e.printStackTrace();
+            } catch (InvocationTargetException e) {
+              e.printStackTrace();
+            }
+          } else {
+            System.err.println("arg " + kvArray[0] + " was not processable");
+          }
+        }
+        
+      }
+    }
+    
     @Override
     public Restlet createInboundRoot()
     {        
