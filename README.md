@@ -1,6 +1,5 @@
-<p align='right'><a href="https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=KMH66TMHZYND6" border=0><img src='https://www.paypalobjects.com/en_US/i/btn/btn_donate_SM.gif'></a></p>
 <p align='center'><img src='https://raw.githubusercontent.com/wiki/lbovet/jminix/images/jminix-logo.png' /></p>
-
+<p align='right'><a href="https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=KMH66TMHZYND6" border=0><img src='https://www.paypalobjects.com/en_US/i/btn/btn_donate_SM.gif'></a></p>
 <p align='center'><b><a href='https://github.com/lbovet/jminix/wiki'>Documentation</a></b> | <b><a href='https://github.com/lbovet/jminix/wiki/Screenshots'>Screenshots</a></b> | <b><a href='https://github.com/lbovet/jminix/wiki/ReleaseNotes'>Release Notes</a></b> | <b><a href='http://groups.google.com/group/jminix-users'>Support</a></b></p>
 
 Don't want to use an external full-blown JMX console? Just want to have a **simple JMX entry point** into your new or existing apps?
