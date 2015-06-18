@@ -31,9 +31,4 @@ Or using the pretty ajax browser:
 
 ---
 
-
-Proudly provided by<br />
-<a href='http://www.post.ch'>
-<img src='http://www.post.ch/en/post-logo.gif' border='0' height='31' /></a>
-
 <p align='right'><img src='https://raw.githubusercontent.com/wiki/lbovet/jminix/images/jminix-cricket.png' /></p>
