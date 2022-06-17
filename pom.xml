@@ -38,9 +38,8 @@
 	<repositories>
 		<repository>
 			<id>maven-restlet</id>
-			<name>Public online
-		Restlet repository</name>
-			<url>http://maven.restlet.org</url>
+            <name>Restlet repository</name>
+            <url>https://maven.restlet.talend.com</url>
 		</repository>
 	</repositories>
 
@@ -187,7 +186,7 @@
 
 	<properties>
 		<spring.version>2.5.6</spring.version>
-		<restlet.version>2.1.4</restlet.version>
+		<restlet.version>2.4.3</restlet.version>
 		<jdk>1.8</jdk>
 	</properties>
 	
