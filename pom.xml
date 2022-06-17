@@ -4,7 +4,7 @@
 	<groupId>org.jminix</groupId>
 	<artifactId>jminix</artifactId>
 	<name>jminix</name>
-	<version>1.2.1-SNAPSHOT</version>
+	<version>1.3-SNAPSHOT</version>
 	<description>A simple embeddable restful JMX console</description>
 	<packaging>jar</packaging>
 	<url>http://www.jminix.org</url>
@@ -188,7 +188,7 @@
 	<properties>
 		<spring.version>2.5.6</spring.version>
 		<restlet.version>2.1.4</restlet.version>
-		<jdk>1.5</jdk>
+		<jdk>1.8</jdk>
 	</properties>
 	
 	<distributionManagement>
