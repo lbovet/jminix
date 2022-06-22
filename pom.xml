@@ -133,6 +133,12 @@
             </plugin>
 			<plugin>
 				<artifactId>maven-javadoc-plugin</artifactId>
+				<configuration>
+					<source>8</source>
+					<additionalOptions>
+						<option>--allow-script-in-comments</option>
+					</additionalOptions>
+				</configuration>
 				<dependencies>
 					<dependency>
 						<groupId>org.springframework</groupId>
