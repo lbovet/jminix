@@ -18,8 +18,10 @@
 package org.jminix.console.resource;
 
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.stream.StreamSupport;
 
 import javax.management.InstanceNotFoundException;
 import javax.management.IntrospectionException;
@@ -39,6 +41,7 @@ import org.restlet.data.CharacterSet;
 import org.restlet.data.Form;
 import org.restlet.data.Language;
 import org.restlet.data.MediaType;
+import org.restlet.ext.servlet.ServletUtils;
 import org.restlet.representation.InputRepresentation;
 import org.restlet.representation.Representation;
 import org.restlet.representation.StringRepresentation;
@@ -77,7 +80,10 @@ public class OperationResource extends AbstractTemplateResource
     public Representation execute(Representation entity) throws ResourceException
     {
         String[] stringParams = new Form(entity).getValuesArray("param");
-
+        
+        if(stringParams != null && isAllNulls(Arrays.asList(stringParams))) {
+            stringParams = (String[]) ServletUtils.getRequest(getRequest()).getParameterMap().get("param");
+        }
 
         String domain = unescape(getDecodedAttribute("domain"));
 
@@ -214,5 +220,8 @@ public class OperationResource extends AbstractTemplateResource
             throw new RuntimeException(e);
         }
     }
-
+    
+    private boolean isAllNulls(Iterable<?> array) {
+        return StreamSupport.stream(array.spliterator(), true).allMatch(o -> o == null);
+    }
 }
