@@ -17,6 +17,25 @@
 
 package org.jminix.console.resource;
 
+import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
+
+import javax.management.Attribute;
+import javax.management.AttributeNotFoundException;
+import javax.management.InstanceNotFoundException;
+import javax.management.IntrospectionException;
+import javax.management.InvalidAttributeValueException;
+import javax.management.MBeanAttributeInfo;
+import javax.management.MBeanException;
+import javax.management.MBeanServerConnection;
+import javax.management.MalformedObjectNameException;
+import javax.management.ObjectName;
+import javax.management.ReflectionException;
+import javax.management.RuntimeErrorException;
+import javax.management.openmbean.CompositeData;
+import javax.management.openmbean.TabularData;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.jminix.type.AttributeFilter;
@@ -24,14 +43,6 @@ import org.restlet.data.Form;
 import org.restlet.representation.Representation;
 import org.restlet.resource.Post;
 import org.restlet.resource.ResourceException;
-
-import javax.management.*;
-import javax.management.openmbean.CompositeData;
-import javax.management.openmbean.TabularData;
-import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Set;
 
 public class AttributeResource extends AbstractTemplateResource
 {
@@ -71,7 +82,7 @@ public class AttributeResource extends AbstractTemplateResource
 
             Object value = server.getAttribute(new ObjectName(domain+":"+mbean), attribute);
 
-            model.put("attribute", info);
+            model.put(ATTRIBUTE_MODEL_ATTRIBUTE, info);
 
 				if((value instanceof CompositeData) && getAttribute("item")!=null) {
 					String item = getDecodedAttribute("item");
@@ -79,39 +90,25 @@ public class AttributeResource extends AbstractTemplateResource
 				   value = ((CompositeData) value).get(item);
 				}
 
-            if(value==null) {
-                model.put("value", "<null>");
-            } else if(value.getClass().isArray()) {
-                templateName = "array-attribute";
+            if(value != null) {
+                value = filter(value);
+            } else {
+                value = "<null>";
+            }
+
+            if(value.getClass().isArray()) {
                 if(value.getClass().getComponentType().isAssignableFrom(CompositeData.class)) {
-                    CompositeData[] data = (CompositeData[])value;
-                    String[] values = new String[data.length];
-                    for(int i=0; i<data.length; i++) {
-                        Set<String> keys = data[i].getCompositeType().keySet();
-                        StringBuilder sb = new StringBuilder("{");
-                        for(String key: keys) {
-                            if (sb.length() > 1) {
-                                sb.append(", ");
-                            }
-                            sb.append(key);
-                            sb.append(": ");
-                            sb.append(data[i].get(key));
-                        }
-                        sb.append("}");
-                        values[i]=sb.toString();
-                    }
-                    model.put("items", values);
+                    templateName = "composite-array-attribute";
                 } else {
-                    model.put("items", value);
+                    templateName = "array-attribute";
                 }
+                model.put(ITEMS_MODEL_ATTRIBUTE, value);
             } else if(value instanceof CompositeData){
                 templateName = "composite-attribute";
-                model.put("attribute", filter(value));
+                model.put(VALUE_MODEL_ATTRIBUTE, value);
             } else if(value instanceof TabularData){
                 templateName = "tabular-attribute";
-                model.put("attribute", filter(value));
-            } else {
-                model.put("value", filter(value));
+                model.put(VALUE_MODEL_ATTRIBUTE, value);
             }
 
             return model;
@@ -139,7 +136,7 @@ public class AttributeResource extends AbstractTemplateResource
         		throw new RuntimeException(targetException.getCause());
         	}
         	log.warn("Error accessing attribute", e);
-            model.put("value", e.getTargetException().getCause().getMessage());
+            model.put(VALUE_MODEL_ATTRIBUTE, e.getTargetException().getCause().getMessage());
             return model;
         }
         catch (ReflectionException e)
@@ -151,7 +148,7 @@ public class AttributeResource extends AbstractTemplateResource
             throw new RuntimeException(e);
         }
         catch(RuntimeException e) {
-            model.put("value", e.getMessage());
+            model.put(VALUE_MODEL_ATTRIBUTE, e.getMessage());
             log.warn("Error accessing attribute", e);
             return model;
         }

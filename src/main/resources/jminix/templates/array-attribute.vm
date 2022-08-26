@@ -10,4 +10,5 @@ $!{attribute.description}
 	$i
 </li>
 #end
+</ul>
 #parse('jminix/templates/footer.vm')

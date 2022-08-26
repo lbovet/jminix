@@ -205,7 +205,7 @@
 		<site>
 			<id>projects.doc</id>
 			<name>projects.doc</name>
-			<url>file:\\projects\doc\${pom.groupId}\${pom.version}</url>
+			<url>file:\\projects\doc\${project.groupId}\${project.version}</url>
 		</site>
 		<repository>
 			<id>maven2-post</id>
