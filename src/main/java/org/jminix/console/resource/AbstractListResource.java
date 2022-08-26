@@ -33,7 +33,7 @@ public abstract class AbstractListResource extends AbstractTemplateResource
     {
         HashMap<String,Object> result = new HashMap<String,Object>();
 
-        result.put("items", getList());
+        result.put(ITEMS_MODEL_ATTRIBUTE, getList());
         
         return result;
     }

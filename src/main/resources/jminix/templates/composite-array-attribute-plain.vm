@@ -1,0 +1,6 @@
+#foreach( $i in $items)
+$i
+#foreach( $key in $i.compositeType.keySet() )
+	$key : $i.get( $key )
+#end
+#end

@@ -4,9 +4,15 @@
 #if($desc!="off")
 $!{attribute.description}
 #end
+<ul>
+#foreach( $i in $items)
+<li>
 <dl>
-#foreach( $key in $value.compositeType.keySet() )
-<dt>$key : $value.get( $key ) <dd> $value.compositeType.getDescription( $key )
+#foreach( $key in $i.compositeType.keySet() )
+<dt>$key : $i.get( $key ) <dd> $i.compositeType.getDescription( $key )
 #end
 </dl>
+</li>
+#end
+</ul>
 #parse('jminix/templates/footer.vm')

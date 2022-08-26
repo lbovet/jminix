@@ -43,6 +43,9 @@ public abstract class AbstractTemplateResource extends ServerResource
     public String a;
 
     private final static String VELOCITY_ENGINE_CONTEX_KEY = "template.resource.velocity.engine";
+    protected final static String ATTRIBUTE_MODEL_ATTRIBUTE = "attribute";
+    protected final static String VALUE_MODEL_ATTRIBUTE = "value";
+    protected final static String ITEMS_MODEL_ATTRIBUTE = "items";
     protected final EncoderBean encoder = new EncoderBean();
 
     @Override
@@ -102,7 +105,7 @@ public abstract class AbstractTemplateResource extends ServerResource
             Map<String, Object> enrichedModel = new HashMap<String, Object>(model);
 
             String templateName = getTemplateName();
-            Object resultObject = enrichedModel.get("value");
+            Object resultObject = enrichedModel.get(VALUE_MODEL_ATTRIBUTE);
             
             if (resultObject instanceof InputStreamContent) {
                 return new InputRepresentation((InputStreamContent) resultObject, MediaType.APPLICATION_OCTET_STREAM);
@@ -187,9 +190,9 @@ public abstract class AbstractTemplateResource extends ServerResource
                                     getRequest().getOriginalRef().getSegments().size() - 3) : null;
             boolean leaf = "attributes".equals(beforeLast) || "operations".equals(beforeLast);
 
-            if (model.containsKey("items") && !leaf)
+            if (model.containsKey(ITEMS_MODEL_ATTRIBUTE) && !leaf)
             {
-                Object items = model.get("items");
+                Object items = model.get(ITEMS_MODEL_ATTRIBUTE);
 
                 Collection<Object> itemCollection = null;
                 if (items instanceof Collection)
@@ -224,17 +227,17 @@ public abstract class AbstractTemplateResource extends ServerResource
             }
             else
             {
-                if (model.containsKey("value"))
+                if (model.containsKey(VALUE_MODEL_ATTRIBUTE))
                 {
-                    if(model.get("value") instanceof HtmlContent) {
+                    if(model.get(VALUE_MODEL_ATTRIBUTE) instanceof HtmlContent) {
                         result.put("value", "...");
                     } else {
                         result.put("value", model.get("value").toString());
                     }
                 }
-                else if (model.containsKey("items"))
+                else if (model.containsKey(ITEMS_MODEL_ATTRIBUTE))
                 {
-                    Object items = model.get("items");
+                    Object items = model.get(ITEMS_MODEL_ATTRIBUTE);
                     String value = null;
                     if(items.getClass().isArray()) {
                         value = Arrays.deepToString(Arrays.asList(items).toArray());

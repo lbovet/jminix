@@ -40,7 +40,7 @@ public class StandaloneMiniConsole
     
     /**
      * @param port the listening HTTP port
-     * @param the application object, if you want to create it by yourself.
+     * @param application the application object, if you want to create it by yourself.
      */
     public StandaloneMiniConsole(int port, MiniConsoleApplication application) {
         // Create a new Component.
