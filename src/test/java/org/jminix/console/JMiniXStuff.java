@@ -9,12 +9,58 @@ import org.jminix.type.InputStreamContent;
 
 public final class JMiniXStuff implements JMiniXStuffMBean {
 
+	public static final String SIMPLE_STRING_VALUE = "This is a simple String";
+	public static final String[] STRING_ARRAY_VALUE = SIMPLE_STRING_VALUE.split(" ");
+
+	private boolean flag = true;
+	private int x = 10;
+
+	/**
+     * {@inheritDoc}
+     */
+    @Override
+    public boolean getBoolean() {
+        return flag;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void setBoolean(boolean f) {
+    	flag = f;
+    }
+
+	/**
+     * {@inheritDoc}
+     */
+    @Override
+    public int getInt() {
+        return x;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void setInt(int v) {
+    	x = v;
+    }
+
     /**
      * {@inheritDoc}
      */
     @Override
     public String getSimpleString() {
-        return "This is a simple String";
+        return SIMPLE_STRING_VALUE;
+    }
+
+	/**
+     * {@inheritDoc}
+     */
+    @Override
+    public String[] getStringArray() {
+        return STRING_ARRAY_VALUE;
     }
 
     /**
