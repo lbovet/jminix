@@ -5,7 +5,15 @@
 $!{attribute.description}
 #end
 #if ($attribute.writable)
-<form method="POST"><input type="text" name="value" value="$value"/><input type="submit" value="update"/>
+<form method="POST">
+#if ($valueType=="checkbox")
+<input type="$valueType" name="value" value="true" #if($value)checked#end/>
+#elseif ($valueType=="number")
+<input type="$valueType" name="value" value="$value" step="Any"/>
+#else
+<input type="$valueType" name="value" value="$value"/>
+#end
+<input type="submit" value="update"/>
 #if($ok)
 <span id="fade" style="color:green">Done</span>
 <script>

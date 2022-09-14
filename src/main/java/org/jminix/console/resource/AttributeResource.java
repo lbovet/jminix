@@ -109,6 +109,17 @@ public class AttributeResource extends AbstractTemplateResource
             } else if(value instanceof TabularData){
                 templateName = "tabular-attribute";
                 model.put(VALUE_MODEL_ATTRIBUTE, value);
+            } else {
+                model.put(VALUE_MODEL_ATTRIBUTE, value);
+                String valueType;
+                if (value instanceof Boolean) {
+                	valueType = "checkbox";
+                } else if (value instanceof Number) {
+                	valueType = "number";
+                } else {
+                	valueType = "text";
+                }
+                model.put(VALUE_TYPE_MODEL_ATTRIBUTE, valueType);
             }
 
             return model;
@@ -173,6 +184,7 @@ public class AttributeResource extends AbstractTemplateResource
             for(MBeanAttributeInfo info : server.getMBeanInfo(new ObjectName(domain+":"+mbean)).getAttributes()) {
                 if(info.getName().equals(attributeName)) {
                     type = info.getType();
+                    break;
                 }
             }
                     

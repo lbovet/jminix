@@ -7,11 +7,25 @@ import org.jminix.type.InputStreamContent;
  * Our Test MBean.
  */
 public interface JMiniXStuffMBean {
+    /**
+     * Attribute that returns a simple String.
+     */
+    public boolean getBoolean();
+
+    public void setBoolean(boolean f);
+
+    public int getInt();
+    public void setInt(int v);
 
     /**
      * Attribute that returns a simple String.
      */
     public String getSimpleString();
+
+    /**
+     * Attribute that returns a String array.
+     */
+    public String[] getStringArray();
 
     /**
      * Operation that Returns a simple String.

@@ -45,6 +45,7 @@ public abstract class AbstractTemplateResource extends ServerResource
     private final static String VELOCITY_ENGINE_CONTEX_KEY = "template.resource.velocity.engine";
     protected final static String ATTRIBUTE_MODEL_ATTRIBUTE = "attribute";
     protected final static String VALUE_MODEL_ATTRIBUTE = "value";
+    protected final static String VALUE_TYPE_MODEL_ATTRIBUTE = "valueType";
     protected final static String ITEMS_MODEL_ATTRIBUTE = "items";
     protected final EncoderBean encoder = new EncoderBean();
 

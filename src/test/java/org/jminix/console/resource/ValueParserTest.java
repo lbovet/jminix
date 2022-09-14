@@ -1,4 +1,4 @@
-package org.jminix.resource;
+package org.jminix.console.resource;
 
 import static org.junit.Assert.assertEquals;
 
