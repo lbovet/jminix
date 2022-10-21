@@ -25,8 +25,6 @@ import org.jasypt.exceptions.EncryptionOperationNotPossibleException;
 import org.jasypt.util.binary.BasicBinaryEncryptor;
 import org.jasypt.util.binary.BinaryEncryptor;
 import org.jgroups.Address;
-import org.jgroups.Channel;
-import org.jgroups.ChannelException;
 import org.jgroups.JChannel;
 import org.jgroups.Message;
 import org.jgroups.ReceiverAdapter;
@@ -48,7 +46,7 @@ public abstract class ClusterManager extends ReceiverAdapter {
 	
 	protected String clusterName;
 	 
-	private Channel channel;
+	private JChannel channel;
 	
 	private boolean ipv6 = false;
 	
@@ -94,7 +92,7 @@ public abstract class ClusterManager extends ReceiverAdapter {
 			log.debug("Connecting to cluster "+clusterName);
 			channel.connect(clusterName);
 			
-		} catch (ChannelException e) {
+		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}        
 	}
@@ -148,8 +146,8 @@ public abstract class ClusterManager extends ReceiverAdapter {
 		
 		// Make sure that others see me.
 		try {
-			channel.send(new Message(null, null, encrypt(thisNode())));
-		} catch (ChannelException e) {
+			channel.send(new Message(null, encrypt(thisNode())));
+		} catch (Exception e) {
 			throw new RuntimeException(e);
 		} 
 	}
@@ -283,7 +281,7 @@ public abstract class ClusterManager extends ReceiverAdapter {
 	/**
 	 * The underlying jgroup channel. Defaults to a bare JChannel instance.
 	 */
-	public void setChannel(Channel channel) {
+	public void setChannel(JChannel channel) {
 		this.channel = channel;
 	}
 
