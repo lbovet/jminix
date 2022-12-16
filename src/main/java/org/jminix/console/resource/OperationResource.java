@@ -82,7 +82,7 @@ public class OperationResource extends AbstractTemplateResource
         String[] stringParams = new Form(entity).getValuesArray("param");
         
         if(stringParams != null && isAllNulls(Arrays.asList(stringParams))) {
-            stringParams = (String[]) ServletUtils.getRequest(getRequest()).getParameterMap().get("param");
+            stringParams = nullToEmpty((String[]) ServletUtils.getRequest(getRequest()).getParameterMap().get("param"));
         }
 
         String domain = unescape(getDecodedAttribute("domain"));
@@ -223,5 +223,9 @@ public class OperationResource extends AbstractTemplateResource
     
     private boolean isAllNulls(Iterable<?> array) {
         return StreamSupport.stream(array.spliterator(), true).allMatch(o -> o == null);
+    }
+    
+    private String[] nullToEmpty(String[] array) {
+        return array !=null ? array: new String[0];
     }
 }
