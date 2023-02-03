@@ -21,7 +21,7 @@ import java.io.IOException;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.stream.StreamSupport;
+import java.util.Objects;
 
 import javax.management.InstanceNotFoundException;
 import javax.management.IntrospectionException;
@@ -79,11 +79,7 @@ public class OperationResource extends AbstractTemplateResource
     @Post("*:txt|html|json")
     public Representation execute(Representation entity) throws ResourceException
     {
-        String[] stringParams = new Form(entity).getValuesArray("param");
-        
-        if(stringParams != null && isAllNulls(Arrays.asList(stringParams))) {
-            stringParams = nullToEmpty((String[]) ServletUtils.getRequest(getRequest()).getParameterMap().get("param"));
-        }
+        String[] stringParams = getStringParams(entity);
 
         String domain = unescape(getDecodedAttribute("domain"));
 
@@ -161,6 +157,16 @@ public class OperationResource extends AbstractTemplateResource
         }
     }
 
+    private String[] getStringParams(Representation entity) {
+        String[] stringParams = new Form(entity).getValuesArray("param");
+
+        if (stringParams == null || isAllNulls(stringParams)) {
+            stringParams = ServletUtils.getRequest(getRequest()).getParameterValues("param");
+        }
+
+        return stringParams != null ? stringParams : new String[0];
+    }
+
     @Override
     protected String getTemplateName()
     {
@@ -221,11 +227,8 @@ public class OperationResource extends AbstractTemplateResource
         }
     }
     
-    private boolean isAllNulls(Iterable<?> array) {
-        return StreamSupport.stream(array.spliterator(), true).allMatch(o -> o == null);
+    private boolean isAllNulls(String[] array) {
+        return Arrays.stream(array).allMatch(Objects::isNull);
     }
-    
-    private String[] nullToEmpty(String[] array) {
-        return array !=null ? array: new String[0];
-    }
+
 }
