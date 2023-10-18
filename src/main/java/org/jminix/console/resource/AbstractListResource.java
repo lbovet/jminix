@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright 2009 Laurent Bovet, Swiss Post IT <lbovet@jminix.org>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,7 +12,7 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- * 
+ *
  */
 
 package org.jminix.console.resource;
@@ -21,23 +21,21 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public abstract class AbstractListResource extends AbstractTemplateResource
-{
+public abstract class AbstractListResource extends AbstractTemplateResource {
 
-    protected String getTemplateName() {
-        return "list";
-    }
-    
-    @Override
-    public final Map<String, Object> getModel()
-    {
-        HashMap<String,Object> result = new HashMap<String,Object>();
+  @Override
+  protected String getTemplateName() {
+    return "list";
+  }
 
-        result.put(ITEMS_MODEL_ATTRIBUTE, getList());
-        
-        return result;
-    }
+  @Override
+  public final Map<String, Object> getModel() {
+    HashMap<String, Object> result = new HashMap<>();
 
-    protected abstract List<?> getList();
-    
+    result.put(ITEMS_MODEL_ATTRIBUTE, getList());
+
+    return result;
+  }
+
+  protected abstract List<?> getList();
 }

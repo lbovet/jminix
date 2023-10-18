@@ -1,4 +1,4 @@
-/* 
+/*
  * ------------------------------------------------------------------------------------------------
  * Copyright 2011 by Swiss Post, Information Technology Services
  * ------------------------------------------------------------------------------------------------
@@ -6,11 +6,11 @@
  * ------------------------------------------------------------------------------------------------
  *
  */
+
 package org.jminix.server;
 
 import java.util.ArrayList;
 import java.util.List;
-
 import javax.management.MBeanServerConnection;
 
 /**
@@ -22,16 +22,17 @@ import javax.management.MBeanServerConnection;
  */
 public abstract class AbstractMapServerConnectionProvider implements ServerConnectionProvider {
 
-	/**
-	 * Not explicitly documented.
-	 * @see org.jminix.server.ServerConnectionProvider#getConnections()
-	 */
-	public List<MBeanServerConnection> getConnections() {
-		List<MBeanServerConnection> result = new ArrayList<MBeanServerConnection>();
-		for(String key: getConnectionKeys()) {
-			result.add(getConnection(key));
-		}
-		return result;
-	}
-
+  /**
+   * Not explicitly documented.
+   *
+   * @see org.jminix.server.ServerConnectionProvider#getConnections()
+   */
+  @Override
+  public List<MBeanServerConnection> getConnections() {
+    List<MBeanServerConnection> result = new ArrayList<>();
+    for (String key : getConnectionKeys()) {
+      result.add(getConnection(key));
+    }
+    return result;
+  }
 }

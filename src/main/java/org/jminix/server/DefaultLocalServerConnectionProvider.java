@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright 2009 Laurent Bovet, Swiss Post IT <lbovet@jminix.org>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,7 +12,7 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- * 
+ *
  */
 
 package org.jminix.server;
@@ -20,10 +20,8 @@ package org.jminix.server;
 import java.lang.management.ManagementFactory;
 import java.util.ArrayList;
 import java.util.List;
-
 import javax.management.MBeanServerConnection;
 import javax.management.MBeanServerFactory;
-
 import org.apache.commons.logging.LogFactory;
 
 /**
@@ -32,32 +30,31 @@ import org.apache.commons.logging.LogFactory;
  * @author Laurent Bovet (lbovet@jminix.org)
  * @since 0.8
  */
-public class DefaultLocalServerConnectionProvider extends AbstractListServerConnectionProvider
-{
+public class DefaultLocalServerConnectionProvider extends AbstractListServerConnectionProvider {
 
-    public List<MBeanServerConnection> getConnections()
-    {
-       List<MBeanServerConnection> result = new ArrayList<MBeanServerConnection>();
-       
-       // Make sure the platform server is instanciated
-       try {
-           ManagementFactory.getPlatformMBeanServer();
-       }
-       catch (SecurityException ex) {
-           LogFactory.getLog(this.getClass()).warn("Not allowed to obtain the Java platform MBeanServer", ex);
-       }
-       
-       try {
-           List servers = MBeanServerFactory.findMBeanServer(null);
-           
-           LogFactory.getLog(this.getClass()).debug("Found "+servers.size()+" MBean servers");
-           
-    	   result.addAll(servers);
-       } catch(Exception e) {
-    	   LogFactory.getLog(this.getClass()).warn("Could not register the Java platform MBeanServer", e);           
-       }
-       
-       return result;
+  @Override
+  public List<MBeanServerConnection> getConnections() {
+    List<MBeanServerConnection> result = new ArrayList<>();
+
+    // Make sure the platform server is instanciated
+    try {
+      ManagementFactory.getPlatformMBeanServer();
+    } catch (SecurityException ex) {
+      LogFactory.getLog(this.getClass())
+          .warn("Not allowed to obtain the Java platform MBeanServer", ex);
     }
 
+    try {
+      List servers = MBeanServerFactory.findMBeanServer(null);
+
+      LogFactory.getLog(this.getClass()).debug("Found " + servers.size() + " MBean servers");
+
+      result.addAll(servers);
+    } catch (Exception e) {
+      LogFactory.getLog(this.getClass())
+          .warn("Could not register the Java platform MBeanServer", e);
+    }
+
+    return result;
+  }
 }
