@@ -20,13 +20,14 @@ package org.jminix.console.resource;
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.net.URLEncoder;
+import org.jminix.exception.JMinixRuntimeException;
 
 public class EncoderBean {
   public String encode(String source) {
     try {
       return URLEncoder.encode(source, "UTF-8");
     } catch (UnsupportedEncodingException e) {
-      throw new RuntimeException(e);
+      throw new JMinixRuntimeException(e);
     }
   }
 
@@ -34,7 +35,7 @@ public class EncoderBean {
     try {
       return URLDecoder.decode(source, "UTF-8");
     } catch (UnsupportedEncodingException e) {
-      throw new RuntimeException(e);
+      throw new JMinixRuntimeException(e);
     }
   }
 }

@@ -24,6 +24,6 @@ public class ServerResource extends AbstractListResource {
 
   @Override
   protected List<Object> getList() {
-    return Arrays.asList(new Object[] {"domains"});
+    return Arrays.asList("domains");
   }
 }

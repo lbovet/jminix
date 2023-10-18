@@ -24,6 +24,7 @@ import java.util.List;
 import javax.management.MBeanServerConnection;
 import javax.management.MalformedObjectNameException;
 import javax.management.ObjectName;
+import org.jminix.exception.JMinixRuntimeException;
 
 public class MBeansResource extends AbstractListResource {
 
@@ -45,10 +46,8 @@ public class MBeansResource extends AbstractListResource {
       Collections.sort(result);
 
       return result;
-    } catch (IOException e) {
-      throw new RuntimeException(e);
-    } catch (MalformedObjectNameException e) {
-      throw new RuntimeException(e);
-    }
+    } catch (IOException | MalformedObjectNameException e) {
+      throw new JMinixRuntimeException(e);
+    } 
   }
 }

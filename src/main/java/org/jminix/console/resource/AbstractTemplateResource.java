@@ -31,6 +31,7 @@ import javax.management.openmbean.CompositeData;
 import net.sf.json.JSONSerializer;
 import org.apache.velocity.Template;
 import org.apache.velocity.app.VelocityEngine;
+import org.jminix.exception.JMinixRuntimeException;
 import org.jminix.server.ServerConnectionProvider;
 import org.jminix.type.HtmlContent;
 import org.jminix.type.InputStreamContent;
@@ -77,7 +78,7 @@ public abstract class AbstractTemplateResource extends ServerResource {
       try {
         ve.init(p);
       } catch (Exception e) {
-        throw new RuntimeException(e);
+        throw new JMinixRuntimeException(e);
       }
 
       getContext().getAttributes().put(VELOCITY_ENGINE_CONTEX_KEY, ve);
@@ -127,7 +128,7 @@ public abstract class AbstractTemplateResource extends ServerResource {
         template = ve.getTemplate("jminix/templates/" + templateName + ".vm");
         template.setEncoding("UTF-8");
       } catch (Exception e) {
-        throw new RuntimeException(e);
+        throw new JMinixRuntimeException(e);
       }
 
       String skin = getRequest().getResourceRef().getQueryAsForm().getValues("skin");
@@ -161,7 +162,7 @@ public abstract class AbstractTemplateResource extends ServerResource {
         template = ve.getTemplate("jminix/templates/" + getTemplateName() + "-plain.vm");
         template.setEncoding("UTF-8");
       } catch (Exception e) {
-        throw new RuntimeException(e);
+        throw new JMinixRuntimeException(e);
       }
 
       enrichedModel.put("encoder", encoder);

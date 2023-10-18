@@ -20,7 +20,6 @@ package org.jminix.console.resource;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -32,6 +31,7 @@ import javax.management.MBeanServerConnection;
 import javax.management.MalformedObjectNameException;
 import javax.management.ObjectName;
 import javax.management.ReflectionException;
+import org.jminix.exception.JMinixRuntimeException;
 
 public class OperationsResource extends AbstractListResource {
 
@@ -81,25 +81,12 @@ public class OperationsResource extends AbstractListResource {
 
       Collections.sort(
           result,
-          new Comparator<Map<String, Object>>() {
-            @Override
-            public int compare(Map<String, Object> o1, Map<String, Object> o2) {
-              return ((String) o1.get("declaration")).compareTo((String) o2.get("declaration"));
-            }
-          });
+          (o1, o2) -> ((String) o1.get("declaration")).compareTo((String) o2.get("declaration")));
 
       return result;
 
-    } catch (IOException e) {
-      throw new RuntimeException(e);
-    } catch (MalformedObjectNameException e) {
-      throw new RuntimeException(e);
-    } catch (InstanceNotFoundException e) {
-      throw new RuntimeException(e);
-    } catch (IntrospectionException e) {
-      throw new RuntimeException(e);
-    } catch (ReflectionException e) {
-      throw new RuntimeException(e);
-    }
+    } catch (IOException | MalformedObjectNameException | InstanceNotFoundException | IntrospectionException | ReflectionException e) {
+      throw new JMinixRuntimeException(e);
+    }    
   }
 }

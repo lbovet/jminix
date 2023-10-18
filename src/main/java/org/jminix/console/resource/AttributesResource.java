@@ -21,7 +21,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
 import javax.management.InstanceNotFoundException;
@@ -31,6 +30,7 @@ import javax.management.MBeanServerConnection;
 import javax.management.MalformedObjectNameException;
 import javax.management.ObjectName;
 import javax.management.ReflectionException;
+import org.jminix.exception.JMinixRuntimeException;
 
 public class AttributesResource extends AbstractListResource {
 
@@ -64,23 +64,10 @@ public class AttributesResource extends AbstractListResource {
 
       Collections.sort(
           result,
-          new Comparator<MBeanAttributeInfo>() {
-            @Override
-            public int compare(MBeanAttributeInfo o1, MBeanAttributeInfo o2) {
-              return o1.getName().compareTo(o2.getName());
-            }
-          });
+          (o1, o2) -> o1.getName().compareTo(o2.getName()));
       return result;
-    } catch (IOException e) {
-      throw new RuntimeException(e);
-    } catch (MalformedObjectNameException e) {
-      throw new RuntimeException(e);
-    } catch (InstanceNotFoundException e) {
-      throw new RuntimeException(e);
-    } catch (IntrospectionException e) {
-      throw new RuntimeException(e);
-    } catch (ReflectionException e) {
-      throw new RuntimeException(e);
-    }
+    } catch (IOException | MalformedObjectNameException | InstanceNotFoundException | IntrospectionException | ReflectionException e) {
+      throw new JMinixRuntimeException(e);
+    }    
   }
 }

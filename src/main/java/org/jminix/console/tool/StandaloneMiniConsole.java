@@ -18,6 +18,7 @@
 package org.jminix.console.tool;
 
 import org.jminix.console.application.MiniConsoleApplication;
+import org.jminix.exception.JMinixRuntimeException;
 import org.restlet.Component;
 import org.restlet.data.Protocol;
 
@@ -55,7 +56,7 @@ public class StandaloneMiniConsole {
     try {
       component.start();
     } catch (Exception e) {
-      throw new RuntimeException(e);
+      throw new JMinixRuntimeException(e);
     }
   }
 
@@ -64,7 +65,7 @@ public class StandaloneMiniConsole {
     try {
       component.stop();
     } catch (Exception e) {
-      throw new RuntimeException(e);
+      throw new JMinixRuntimeException(e);
     }
   }
 

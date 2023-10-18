@@ -32,6 +32,7 @@ import javax.management.MalformedObjectNameException;
 import javax.management.ObjectName;
 import javax.management.ReflectionException;
 import net.sf.json.JSONSerializer;
+import org.jminix.exception.JMinixRuntimeException;
 import org.jminix.type.HtmlContent;
 import org.jminix.type.InputStreamContent;
 import org.restlet.data.CharacterSet;
@@ -127,7 +128,7 @@ public class OperationResource extends AbstractTemplateResource {
       } else {
         String queryString = getQueryString();
         if (!queryString.contains("ok=1")) {
-          if (queryString == null || "".equals(queryString)) {
+          if ("".equals(queryString)) {
             queryString = "?";
           } else {
             queryString += "&";
@@ -137,17 +138,9 @@ public class OperationResource extends AbstractTemplateResource {
         redirectPermanent(encoder.encode(declaration) + queryString);
         return null;
       }
-    } catch (InstanceNotFoundException e) {
-      throw new RuntimeException(e);
-    } catch (MalformedObjectNameException e) {
-      throw new RuntimeException(e);
-    } catch (MBeanException e) {
-      throw new RuntimeException(e);
-    } catch (ReflectionException e) {
-      throw new RuntimeException(e);
-    } catch (IOException e) {
-      throw new RuntimeException(e);
-    }
+    } catch (InstanceNotFoundException | MalformedObjectNameException | MBeanException | ReflectionException | IOException e) {
+      throw new JMinixRuntimeException(e);
+    }    
   }
 
   private String[] getStringParams(Representation entity) {
@@ -194,17 +187,9 @@ public class OperationResource extends AbstractTemplateResource {
         }
       }
       return null;
-    } catch (IOException e) {
-      throw new RuntimeException(e);
-    } catch (InstanceNotFoundException e) {
-      throw new RuntimeException(e);
-    } catch (MalformedObjectNameException e) {
-      throw new RuntimeException(e);
-    } catch (ReflectionException e) {
-      throw new RuntimeException(e);
-    } catch (IntrospectionException e) {
-      throw new RuntimeException(e);
-    }
+    } catch (IOException | InstanceNotFoundException | MalformedObjectNameException | ReflectionException | IntrospectionException e) {
+      throw new JMinixRuntimeException(e);
+    }    
   }
 
   private boolean isAllNulls(String[] array) {

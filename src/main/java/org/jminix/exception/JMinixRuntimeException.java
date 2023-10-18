@@ -15,15 +15,29 @@
  *
  */
 
-package org.jminix.console.resource;
+package org.jminix.exception;
 
-import java.util.Arrays;
-import java.util.List;
+public class JMinixRuntimeException extends RuntimeException {
 
-public class DomainResource extends AbstractListResource {
-
-  @Override
-  protected List<Object> getList() {
-    return Arrays.asList("mbeans");
+  public JMinixRuntimeException() {
+    super();
   }
+
+  public JMinixRuntimeException(String message, Throwable cause, boolean enableSuppression,
+      boolean writableStackTrace) {
+    super(message, cause, enableSuppression, writableStackTrace);
+  }
+
+  public JMinixRuntimeException(String message, Throwable cause) {
+    super(message, cause);
+  }
+
+  public JMinixRuntimeException(String message) {
+    super(message);
+  }
+
+  public JMinixRuntimeException(Throwable cause) {
+    super(cause);
+  }
+
 }

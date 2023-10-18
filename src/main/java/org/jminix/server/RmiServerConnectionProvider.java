@@ -10,7 +10,6 @@
 package org.jminix.server;
 
 import java.io.IOException;
-import java.net.MalformedURLException;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
@@ -19,6 +18,7 @@ import javax.management.MBeanServerConnection;
 import javax.management.remote.JMXConnector;
 import javax.management.remote.JMXConnectorFactory;
 import javax.management.remote.JMXServiceURL;
+import org.jminix.exception.JMinixRuntimeException;
 
 /**
  * A connection provider browsing serve
@@ -45,7 +45,7 @@ public class RmiServerConnectionProvider extends AbstractMapServerConnectionProv
   @Override
   public List<String> getConnectionKeys() {
     String[] parts = serviceUrl.split("/");
-    return Arrays.asList(new String[] {parts[parts.length - 1]});
+    return Arrays.asList(parts[parts.length - 1]);
   }
 
   /**
@@ -76,11 +76,9 @@ public class RmiServerConnectionProvider extends AbstractMapServerConnectionProv
         jmxc.connect();
       }
       return jmxc.getMBeanServerConnection();
-    } catch (MalformedURLException e) {
-      throw new RuntimeException(e);
     } catch (IOException e) {
-      throw new RuntimeException(e);
-    }
+      throw new JMinixRuntimeException(e);
+    } 
   }
 
   /**
