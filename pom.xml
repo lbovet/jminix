@@ -38,8 +38,8 @@
 	<repositories>
 		<repository>
 			<id>maven-restlet</id>
-            <name>Restlet repository</name>
-            <url>https://maven.restlet.talend.com</url>
+			<name>Restlet repository</name>
+			<url>https://maven.restlet.talend.com</url>
 		</repository>
 	</repositories>
 
@@ -89,9 +89,9 @@
 			<scope>provided</scope>
 		</dependency>
 		<dependency>
-    		<groupId>org.jgroups</groupId>
-    		<artifactId>jgroups</artifactId>
-    		<version>4.0.24.Final</version>
+			<groupId>org.jgroups</groupId>
+			<artifactId>jgroups</artifactId>
+			<version>4.0.24.Final</version>
 		</dependency>
 		<dependency>
 			<groupId>org.jasypt</groupId>
@@ -115,6 +115,7 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-compiler-plugin</artifactId>
+				<version>3.11.0</version>
 				<configuration>
 					<source>${jdk}</source>
 					<target>${jdk}</target>
@@ -123,21 +124,24 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-resources-plugin</artifactId>
+				<version>3.3.1</version>
 			</plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-source-plugin</artifactId>
-                <executions>
-                    <execution>
-                        <id>attach-sources</id>
-                        <goals>
-                            <goal>jar</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-source-plugin</artifactId>
+				<version>3.3.0</version>
+				<executions>
+					<execution>
+						<id>attach-sources</id>
+						<goals>
+							<goal>jar</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
 			<plugin>
 				<artifactId>maven-javadoc-plugin</artifactId>
+				<version>3.6.0</version>
 				<configuration>
 					<source>8</source>
 					<additionalOptions>
@@ -151,14 +155,14 @@
 						<version>${spring.version}</version>
 					</dependency>
 				</dependencies>
-                <executions>
-                    <execution>
-                        <id>attach-javadoc</id>
-                        <goals>
-                            <goal>jar</goal>
-                        </goals>
-                    </execution>
-                </executions>
+				<executions>
+					<execution>
+						<id>attach-javadoc</id>
+						<goals>
+							<goal>jar</goal>
+						</goals>
+					</execution>
+				</executions>
 			</plugin>
 			<plugin>
 				<artifactId>maven-assembly-plugin</artifactId>
@@ -168,30 +172,77 @@
 					</descriptorRefs>
 				</configuration>
 			</plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-shade-plugin</artifactId>
-                <version>2.3</version>
-                <executions>
-                    <!-- Run shade goal on package phase -->
-                    <execution>
-                        <phase>package</phase>
-                        <goals>
-                            <goal>shade</goal>
-                        </goals>
-                        <configuration>
-                            <transformers>
-                                <!-- add Main-Class to manifest file -->
-                                 <transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
-                                     <mainClass>org.jminix.console.tool.StandaloneMiniConsole</mainClass>
-                                </transformer>
-                            </transformers>
-                            <shadedArtifactAttached>true</shadedArtifactAttached>
-                            <shadedClassifierName>standalone</shadedClassifierName>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-shade-plugin</artifactId>
+				<version>2.3</version>
+				<executions>
+					<!-- Run shade goal on package phase -->
+					<execution>
+						<phase>package</phase>
+						<goals>
+							<goal>shade</goal>
+						</goals>
+						<configuration>
+							<transformers>
+								<!-- add Main-Class to manifest file -->
+								<transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
+									<mainClass>org.jminix.console.tool.StandaloneMiniConsole</mainClass>
+								</transformer>
+							</transformers>
+							<shadedArtifactAttached>true</shadedArtifactAttached>
+							<shadedClassifierName>standalone</shadedClassifierName>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+<!--			<plugin>-->
+<!--				<groupId>com.theoryinpractise</groupId>-->
+<!--				<artifactId>googleformatter-maven-plugin</artifactId>-->
+<!--				<version>1.7.3</version>-->
+<!--				<executions>-->
+<!--					<execution>-->
+<!--						<id>reformat-sources</id>-->
+<!--						<configuration>-->
+<!--							<includeStale>false</includeStale>-->
+<!--							<style>GOOGLE</style>-->
+<!--							<formatMain>true</formatMain>-->
+<!--							<formatTest>true</formatTest>-->
+<!--							<filterModified>false</filterModified>-->
+<!--							<skip>false</skip>-->
+<!--							<fixImports>true</fixImports>-->
+<!--							<maxLineLength>100</maxLineLength>-->
+<!--						</configuration>-->
+<!--						<goals>-->
+<!--							<goal>format</goal>-->
+<!--						</goals>-->
+<!--						<phase>process-sources</phase>-->
+<!--					</execution>-->
+<!--				</executions>-->
+<!--			</plugin>-->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-checkstyle-plugin</artifactId>
+				<version>3.3.0</version>
+				<executions>
+					<execution>
+						<id>validate</id>
+						<phase>validate</phase>
+						<configuration>
+							<configLocation>google_checks.xml</configLocation> 
+							<suppressionsLocation>checkstyle-suppressions.xml</suppressionsLocation>
+							<inputEncoding>UTF-8</inputEncoding>
+							<failsOnError>true</failsOnError>
+							<consoleOutput>false</consoleOutput>
+							<includeTestSourceDirectory>false</includeTestSourceDirectory>
+							<headerLocation>checkstyle-header.txt</headerLocation>
+						</configuration>
+						<goals>
+							<goal>check</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
 		</plugins>
 	</build>
 
@@ -222,4 +273,22 @@
 			<uniqueVersion>false</uniqueVersion>
 		</snapshotRepository>
 	</distributionManagement>
+
+	<reporting>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-checkstyle-plugin</artifactId>
+				<version>3.3.0</version>
+				<reportSets>
+					<reportSet>
+						<reports>
+							<report>checkstyle</report>
+						</reports>
+					</reportSet>
+				</reportSets>
+			</plugin>
+		</plugins>
+	</reporting>
+
 </project>

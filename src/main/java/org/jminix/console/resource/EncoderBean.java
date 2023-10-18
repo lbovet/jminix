@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright 2009 Laurent Bovet, Swiss Post IT <lbovet@jminix.org>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,7 +12,7 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- * 
+ *
  */
 
 package org.jminix.console.resource;
@@ -22,25 +22,19 @@ import java.net.URLDecoder;
 import java.net.URLEncoder;
 
 public class EncoderBean {
-    public String encode(String source) {            
-        try
-        {
-            return URLEncoder.encode(source, "UTF-8");
-        }
-        catch (UnsupportedEncodingException e)
-        {
-            throw new RuntimeException(e);
-        }
+  public String encode(String source) {
+    try {
+      return URLEncoder.encode(source, "UTF-8");
+    } catch (UnsupportedEncodingException e) {
+      throw new RuntimeException(e);
     }
-    
-    public String decode(String source) {
-        try
-        {
-            return URLDecoder.decode(source, "UTF-8");
-        }
-        catch (UnsupportedEncodingException e)
-        {
-            throw new RuntimeException(e);
-        }
+  }
+
+  public String decode(String source) {
+    try {
+      return URLDecoder.decode(source, "UTF-8");
+    } catch (UnsupportedEncodingException e) {
+      throw new RuntimeException(e);
     }
+  }
 }

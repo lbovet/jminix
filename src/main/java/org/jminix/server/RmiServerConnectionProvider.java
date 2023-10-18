@@ -1,4 +1,4 @@
-/* 
+/*
  * ------------------------------------------------------------------------------------------------
  * Copyright 2011 by Swiss Post, Information Technology Services
  * ------------------------------------------------------------------------------------------------
@@ -6,6 +6,7 @@
  * ------------------------------------------------------------------------------------------------
  *
  */
+
 package org.jminix.server;
 
 import java.io.IOException;
@@ -14,7 +15,6 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
 import javax.management.MBeanServerConnection;
 import javax.management.remote.JMXConnector;
 import javax.management.remote.JMXConnectorFactory;
@@ -29,78 +29,84 @@ import javax.management.remote.JMXServiceURL;
  */
 public class RmiServerConnectionProvider extends AbstractMapServerConnectionProvider {
 
-	private String serviceUrl;
-	
-	private String username;
-	
-	private String password;
+  private String serviceUrl;
 
-    private Map<String, JMXConnector> jmxcs = new HashMap<String, JMXConnector>();
+  private String username;
 
-	/**
-	 * Not explicitly documented.
-	 * @see org.jminix.server.ServerConnectionProvider#getConnectionKeys()
-	 */
-	public List<String> getConnectionKeys() {
-		String[] parts = serviceUrl.split("/");
-		return Arrays.asList(new String[] { parts[parts.length-1] });		
-	}
+  private String password;
 
-	/**
-	 * Not explicitly documented.
-	 * @see org.jminix.server.ServerConnectionProvider#getConnection(java.lang.String)
-	 */
-	public MBeanServerConnection getConnection(String name) {
+  private Map<String, JMXConnector> jmxcs = new HashMap<>();
 
-		JMXServiceURL url;
-		try {
-			url = new JMXServiceURL(serviceUrl);
+  /**
+   * Not explicitly documented.
+   *
+   * @see org.jminix.server.ServerConnectionProvider#getConnectionKeys()
+   */
+  @Override
+  public List<String> getConnectionKeys() {
+    String[] parts = serviceUrl.split("/");
+    return Arrays.asList(new String[] {parts[parts.length - 1]});
+  }
 
-			JMXConnector jmxc = jmxcs.get(serviceUrl);
+  /**
+   * Not explicitly documented.
+   *
+   * @see org.jminix.server.ServerConnectionProvider#getConnection(java.lang.String)
+   */
+  @Override
+  public MBeanServerConnection getConnection(String name) {
 
-			if(jmxc == null) {
-				if (username != null && password != null) {
-					String[] creds = {username, password};
-					Map<String, Object> env = new HashMap<String, Object>();
-					env.put(JMXConnector.CREDENTIALS, creds);
-					jmxc = JMXConnectorFactory.connect(url, env);
-				} else {
-					jmxc = JMXConnectorFactory.connect(url, null);
-				}
-				jmxcs.put(serviceUrl, jmxc);
-			} else {
-				jmxc.connect();
-			}
-			return jmxc.getMBeanServerConnection();
-		} catch (MalformedURLException e) {
-			throw new RuntimeException(e);
-		} catch (IOException e) {
-			throw new RuntimeException(e);
-		}
-	} 
+    JMXServiceURL url;
+    try {
+      url = new JMXServiceURL(serviceUrl);
 
-	/**
-	 * Sets the attribute serviceUrl.
-	 * @param serviceUrl The serviceUrl to set.
-	 */
-	public void setServiceUrl(String serviceUrl) {
-		this.serviceUrl = serviceUrl;
-	}
+      JMXConnector jmxc = jmxcs.get(serviceUrl);
 
-	/**
-	 * Sets the attribute username.
-	 * @param username The username to set.
-	 */
-	public void setUsername(String username) {
-		this.username = username;
-	}
+      if (jmxc == null) {
+        if (username != null && password != null) {
+          String[] creds = {username, password};
+          Map<String, Object> env = new HashMap<>();
+          env.put(JMXConnector.CREDENTIALS, creds);
+          jmxc = JMXConnectorFactory.connect(url, env);
+        } else {
+          jmxc = JMXConnectorFactory.connect(url, null);
+        }
+        jmxcs.put(serviceUrl, jmxc);
+      } else {
+        jmxc.connect();
+      }
+      return jmxc.getMBeanServerConnection();
+    } catch (MalformedURLException e) {
+      throw new RuntimeException(e);
+    } catch (IOException e) {
+      throw new RuntimeException(e);
+    }
+  }
 
-	/**
-	 * Sets the attribute password.
-	 * @param password The password to set.
-	 */
-	public void setPassword(String password) {
-		this.password = password;
-	}
+  /**
+   * Sets the attribute serviceUrl.
+   *
+   * @param serviceUrl The serviceUrl to set.
+   */
+  public void setServiceUrl(String serviceUrl) {
+    this.serviceUrl = serviceUrl;
+  }
 
+  /**
+   * Sets the attribute username.
+   *
+   * @param username The username to set.
+   */
+  public void setUsername(String username) {
+    this.username = username;
+  }
+
+  /**
+   * Sets the attribute password.
+   *
+   * @param password The password to set.
+   */
+  public void setPassword(String password) {
+    this.password = password;
+  }
 }

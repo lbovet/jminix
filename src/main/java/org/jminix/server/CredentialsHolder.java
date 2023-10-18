@@ -1,4 +1,4 @@
-/* 
+/*
  * ------------------------------------------------------------------------------------------------
  * Copyright 2011 by Swiss Post, Information Technology Services
  * ------------------------------------------------------------------------------------------------
@@ -6,6 +6,7 @@
  * ------------------------------------------------------------------------------------------------
  *
  */
+
 package org.jminix.server;
 
 /**
@@ -17,7 +18,7 @@ package org.jminix.server;
  */
 public interface CredentialsHolder {
 
-	public String getUsername();
-	
-	public String getPassword();
+  public String getUsername();
+
+  public String getPassword();
 }
