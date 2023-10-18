@@ -21,6 +21,7 @@ import java.io.IOException;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import org.jminix.exception.JMinixRuntimeException;
 
 public class DomainsResource extends AbstractListResource {
 
@@ -34,7 +35,7 @@ public class DomainsResource extends AbstractListResource {
       Collections.sort(result);
       return result;
     } catch (IOException e) {
-      throw new RuntimeException(e);
+      throw new JMinixRuntimeException(e);
     }
   }
 }

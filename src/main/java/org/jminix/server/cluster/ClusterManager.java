@@ -30,6 +30,7 @@ import org.jgroups.Message;
 import org.jgroups.ReceiverAdapter;
 import org.jgroups.View;
 import org.jgroups.util.Util;
+import org.jminix.exception.JMinixRuntimeException;
 import org.jminix.server.ConfigurableServerConnectionProvider;
 import org.jminix.server.ServerConnectionProvider;
 
@@ -98,7 +99,7 @@ public abstract class ClusterManager extends ReceiverAdapter {
       channel.connect(clusterName);
 
     } catch (Exception e) {
-      throw new RuntimeException(e);
+      throw new JMinixRuntimeException(e);
     }
   }
 
@@ -111,7 +112,7 @@ public abstract class ClusterManager extends ReceiverAdapter {
       try {
         host = InetAddress.getLocalHost().getHostName();
       } catch (UnknownHostException e) {
-        throw new RuntimeException(e);
+        throw new JMinixRuntimeException(e);
       }
     }
     if (nodeName == null) {
@@ -152,7 +153,7 @@ public abstract class ClusterManager extends ReceiverAdapter {
     try {
       channel.send(new Message(null, encrypt(thisNode())));
     } catch (Exception e) {
-      throw new RuntimeException(e);
+      throw new JMinixRuntimeException(e);
     }
   }
 
@@ -177,7 +178,7 @@ public abstract class ClusterManager extends ReceiverAdapter {
     try {
       message = Util.objectToByteBuffer(node);
     } catch (Exception e) {
-      throw new RuntimeException();
+      throw new JMinixRuntimeException();
     }
     if (encryptor != null) {
       message = encryptor.encrypt(message);

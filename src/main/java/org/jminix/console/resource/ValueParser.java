@@ -19,6 +19,7 @@ package org.jminix.console.resource;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.Validate;
+import org.jminix.exception.JMinixRuntimeException;
 
 public class ValueParser {
   private static String stringArraySeparator = ";";
@@ -84,7 +85,7 @@ public class ValueParser {
     }
 
     if (result == null) {
-      throw new RuntimeException("Type " + type + " is not supported");
+      throw new JMinixRuntimeException("Type " + type + " is not supported");
     }
 
     return result;

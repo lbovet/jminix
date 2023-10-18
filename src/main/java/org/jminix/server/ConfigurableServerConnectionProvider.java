@@ -17,6 +17,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import javax.management.MBeanServerConnection;
+import org.jminix.exception.JMinixRuntimeException;
 
 /**
  * Gathers multiple connections from different server connection providers.
@@ -69,7 +70,7 @@ public class ConfigurableServerConnectionProvider extends AbstractMapServerConne
     }
     ServerConnectionProvider provider = providerMap.get(keys[0].toString());
     if (provider == null) {
-      throw new RuntimeException("No connection named '" + name + "'");
+      throw new JMinixRuntimeException("No connection named '" + name + "'");
     }
     return provider.getConnection(keys[1].toString());
   }

@@ -20,6 +20,7 @@ package org.jminix.console.servlet;
 import javax.servlet.ServletException;
 import org.jminix.console.application.MiniConsoleApplication;
 import org.jminix.console.resource.ValueParser;
+import org.jminix.exception.JMinixRuntimeException;
 import org.jminix.server.ServerConnectionProvider;
 import org.jminix.type.AttributeFilter;
 import org.restlet.Application;
@@ -56,13 +57,9 @@ public class MiniConsoleServlet extends ServerServlet {
         Class<ServerConnectionProvider> providerClass =
             (Class<ServerConnectionProvider>) loadClass(providerClassName);
         app.setServerConnectionProvider(providerClass.newInstance());
-      } catch (ClassNotFoundException e) {
-        throw new RuntimeException(e);
-      } catch (InstantiationException e) {
-        throw new RuntimeException(e);
-      } catch (IllegalAccessException e) {
-        throw new RuntimeException(e);
-      }
+      } catch (ClassNotFoundException | InstantiationException | IllegalAccessException e) {
+        throw new JMinixRuntimeException(e);
+      }  
     }
 
     String attributeFilterClassName = getInitParameter("attributeFilter");
@@ -74,13 +71,9 @@ public class MiniConsoleServlet extends ServerServlet {
         Class<AttributeFilter> attributeFilter =
             (Class<AttributeFilter>) loadClass(attributeFilterClassName);
         app.setAttributeFilter(attributeFilter.newInstance());
-      } catch (ClassNotFoundException e) {
-        throw new RuntimeException(e);
-      } catch (InstantiationException e) {
-        throw new RuntimeException(e);
-      } catch (IllegalAccessException e) {
-        throw new RuntimeException(e);
-      }
+      } catch (ClassNotFoundException | InstantiationException | IllegalAccessException e) {
+        throw new JMinixRuntimeException(e);
+      }  
     }
 
     super.init();

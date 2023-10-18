@@ -49,15 +49,12 @@ import org.restlet.routing.Template;
 
 public class MiniConsoleApplication extends Application {
 
-  {
-    configureLog(null);
-  }
-
   private ServerConnectionProvider serverConnectionProvider;
 
   private AttributeFilter attributeFilter;
 
   public MiniConsoleApplication() {
+    configureLog(null);
     initConnectionServiceProvider();
   }
 
@@ -166,17 +163,17 @@ public class MiniConsoleApplication extends Application {
 
                   @Override
                   public void write(OutputStream outputStream) throws IOException {
-                    InputStream in =
-                        getClass()
-                            .getClassLoader()
-                            .getResource("jminix/console/index.html")
-                            .openStream();
-                    while (in.available() > 0) {
-                      byte[] buffer = new byte[8192];
-                      int bytesRead;
-                      while ((bytesRead = in.read(buffer)) != -1) {
-                        outputStream.write(buffer, 0, bytesRead);
-                        outputStream.flush();
+                    try (InputStream in = getClass()
+                        .getClassLoader()
+                        .getResource("jminix/console/index.html")
+                        .openStream()) {
+                      while (in.available() > 0) {
+                        byte[] buffer = new byte[8192];
+                        int bytesRead;
+                        while ((bytesRead = in.read(buffer)) != -1) {
+                          outputStream.write(buffer, 0, bytesRead);
+                          outputStream.flush();
+                        }
                       }
                     }
                   }

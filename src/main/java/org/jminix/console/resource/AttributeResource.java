@@ -36,6 +36,7 @@ import javax.management.openmbean.CompositeData;
 import javax.management.openmbean.TabularData;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.jminix.exception.JMinixRuntimeException;
 import org.jminix.type.AttributeFilter;
 import org.restlet.data.Form;
 import org.restlet.representation.Representation;
@@ -119,27 +120,17 @@ public class AttributeResource extends AbstractTemplateResource {
       }
 
       return model;
-    } catch (IOException e) {
-      throw new RuntimeException(e);
-    } catch (AttributeNotFoundException e) {
-      throw new RuntimeException(e);
-    } catch (InstanceNotFoundException e) {
-      throw new RuntimeException(e);
-    } catch (MalformedObjectNameException e) {
-      throw new RuntimeException(e);
-    } catch (MBeanException e) {
+    } catch (IOException | AttributeNotFoundException | InstanceNotFoundException | MalformedObjectNameException | ReflectionException | IntrospectionException e) {
+      throw new JMinixRuntimeException(e);
+    }    catch (MBeanException e) {
       Exception targetException = e.getTargetException();
       if (targetException instanceof RuntimeErrorException) {
-        throw new RuntimeException(targetException.getCause());
+        throw new JMinixRuntimeException(targetException.getCause());
       }
-      log.warn("Error accessing attribute", e);
       model.put(VALUE_MODEL_ATTRIBUTE, e.getTargetException().getCause().getMessage());
+      log.warn("Error accessing attribute", e);
       return model;
-    } catch (ReflectionException e) {
-      throw new RuntimeException(e);
-    } catch (IntrospectionException e) {
-      throw new RuntimeException(e);
-    } catch (RuntimeException e) {
+    }   catch (JMinixRuntimeException e) {
       model.put(VALUE_MODEL_ATTRIBUTE, e.getMessage());
       log.warn("Error accessing attribute", e);
       return model;
@@ -177,7 +168,7 @@ public class AttributeResource extends AbstractTemplateResource {
 
       String queryString = getQueryString();
       if (!queryString.contains("ok=1")) {
-        if (queryString == null || "".equals(queryString)) {
+        if ("".equals(queryString)) {
           queryString = "?";
         } else {
           queryString += "&";
@@ -185,23 +176,9 @@ public class AttributeResource extends AbstractTemplateResource {
         queryString += "ok=1";
       }
       redirectPermanent(encoder.encode(attributeName) + queryString);
-    } catch (InstanceNotFoundException e) {
-      throw new RuntimeException(e);
-    } catch (AttributeNotFoundException e) {
-      throw new RuntimeException(e);
-    } catch (InvalidAttributeValueException e) {
-      throw new RuntimeException(e);
-    } catch (MalformedObjectNameException e) {
-      throw new RuntimeException(e);
-    } catch (MBeanException e) {
-      throw new RuntimeException(e);
-    } catch (ReflectionException e) {
-      throw new RuntimeException(e);
-    } catch (IOException e) {
-      throw new RuntimeException(e);
-    } catch (IntrospectionException e) {
-      throw new RuntimeException(e);
-    }
+    } catch (InstanceNotFoundException | AttributeNotFoundException | InvalidAttributeValueException | MalformedObjectNameException | MBeanException | ReflectionException | IOException | IntrospectionException e) {
+      throw new JMinixRuntimeException(e);
+    }       
   }
 
   @Override

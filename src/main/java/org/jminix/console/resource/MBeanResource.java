@@ -26,6 +26,7 @@ import javax.management.MBeanServerConnection;
 import javax.management.MalformedObjectNameException;
 import javax.management.ObjectName;
 import javax.management.ReflectionException;
+import org.jminix.exception.JMinixRuntimeException;
 
 public class MBeanResource extends AbstractListResource {
 
@@ -47,19 +48,9 @@ public class MBeanResource extends AbstractListResource {
       if (server.getMBeanInfo(new ObjectName(domain + ":" + mbean)).getOperations().length > 0) {
         result.add("operations");
       }
-    } catch (InstanceNotFoundException e) {
-      throw new RuntimeException(e);
-    } catch (IntrospectionException e) {
-      throw new RuntimeException(e);
-    } catch (MalformedObjectNameException e) {
-      throw new RuntimeException(e);
-    } catch (ReflectionException e) {
-      throw new RuntimeException(e);
-    } catch (NullPointerException e) {
-      throw new RuntimeException(e);
-    } catch (IOException e) {
-      throw new RuntimeException(e);
-    }
+    } catch (InstanceNotFoundException | IntrospectionException | MalformedObjectNameException | ReflectionException | NullPointerException | IOException e) {
+      throw new JMinixRuntimeException(e);
+    }     
 
     return result;
   }
