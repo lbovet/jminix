@@ -1,0 +1,66 @@
+name: "Manage pushes"
+
+on:
+  push:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          submodules: recursive
+
+      - name: Setup Java
+        uses: actions/setup-java@v3
+        with:
+          distribution: 'adopt'
+          java-version: '8'
+          cache: 'maven'
+
+      - name: Build
+        run: mvn package
+
+      - name: Log in to Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+
+      - name: Get artifact version from pom.xml
+        run: echo "ARTIFACT_VERSION=$( mvn -q -DforceStdout help:evaluate -Dexpression=project.version )" >> $GITHUB_ENV
+
+      - name: Get artifact name from pom.xml
+        run: echo "ARTIFACT_NAME=$( mvn -q -DforceStdout help:evaluate -Dexpression=project.build.finalName )" >> $GITHUB_ENV
+
+      - name: Get artifact packaging from pom.xml
+        run: echo "ARTIFACT_PACKAGING=$( mvn -q -DforceStdout help:evaluate -Dexpression=project.packaging )" >> $GITHUB_ENV
+
+      - name: Rename artifact for Dockerfile
+        run: cp target/${{ env.ARTIFACT_NAME }}-standalone.${{ env.ARTIFACT_PACKAGING }} target/jminix.jar
+
+      - name: Build and push Docker image
+        uses: docker/build-push-action@v5
+        with:
+          # NOT SUPPORTED BY BUILDX YET : cache-from: type=gha
+          # NOT SUPPORTED BY BUILDX YET : cache-to: type=gha,mode=max
+          context: .
+          file: src/docker/Dockerfile
+          labels: |
+            org.opencontainers.image.created=${{ steps.tags.outputs.build_date }}
+            org.opencontainers.image.authors="lbovet@github, kerny3d@github"
+            org.opencontainers.image.url=${{ github.event.repository.clone_url }}
+            org.opencontainers.image.documentation=${{ github.event.repository.clone_url }}
+            org.opencontainers.image.source=${{ github.event.repository.clone_url }}
+            org.opencontainers.image.version=${{ env.ARTIFACT_VERSION }}
+            org.opencontainers.image.revision=${{ github.sha }}
+            org.opencontainers.image.vendor=${{ github.event.repository.clone_url }}
+            org.opencontainers.image.licenses=${{ github.event.repository.license.spdx_id }}
+            org.opencontainers.image.ref.name="n.d."
+            org.opencontainers.image.title=${{ github.event.repository.name }}
+            org.opencontainers.image.description=${{ github.event.repository.description }}
+            org.opencontainers.image.base.digest="n.d."
+            org.opencontainers.image.base.name="eclipse-temurin:8-jdk-alpine"
+          push: true
+          tags: ${{ vars.DOCKER_NAMESPACE }}/jminix:${{ env.ARTIFACT_VERSION }}
